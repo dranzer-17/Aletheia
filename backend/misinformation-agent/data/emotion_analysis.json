@@ -1,0 +1,21 @@
+{
+    "primary_emotion": "surprise",
+    "emotion_distribution": {
+        "joy": 0.0,
+        "anger": 10.0,
+        "sadness": 20.0,
+        "fear": 25.0,
+        "surprise": 35.0,
+        "disgust": 10.0
+    },
+    "raw_scores": {
+        "joy": 0.0,
+        "anger": 0.1,
+        "sadness": 0.2,
+        "fear": 0.25,
+        "surprise": 0.35,
+        "disgust": 0.1
+    },
+    "confidence": 0.35,
+    "model": "LLM (Gemini)"
+}
