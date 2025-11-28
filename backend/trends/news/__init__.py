@@ -1,0 +1,2 @@
+"""News trends module."""
+
