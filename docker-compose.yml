@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Service 1: MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-local
+    restart: always
+    ports:
+      # Maps localhost:8080 (your PC) -> Container:27017 (Mongo Default)
+      - "8080:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      # Persists data in a folder named 'mongo_data' so you don't lose data on restart
+      - ./mongo_data:/data/db
+
+  # Optional: Service 2 - Your FastAPI Backend (We can add this later)
+  # backend:
+  #   build: .
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - mongodb
+
+volumes:
+  mongo_data:
