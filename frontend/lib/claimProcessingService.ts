@@ -17,7 +17,7 @@ interface ActiveClaim {
 }
 
 interface ClaimProcessingCallbacks {
-  onStageUpdate?: (stage: string) => void;
+  onStageUpdate?: (stage: string | null) => void;
   onComplete?: (verdict: any) => void;
   onError?: (error: string) => void;
   onAgentsUpdate?: (agents: any[]) => void;

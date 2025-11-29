@@ -124,6 +124,7 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
         smooth: {
           enabled: true,
           type: "continuous",
+          roundness: 0.5,
         },
         color: isLightMode ? "#0056b3" : "#0a7fff",
       },
@@ -320,6 +321,7 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
         smooth: {
           enabled: true,
           type: edge.edge_type === "reply" ? "curvedCW" : "continuous",
+          roundness: 0.5,
         },
       })
     })

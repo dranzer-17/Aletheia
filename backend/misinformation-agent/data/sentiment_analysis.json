@@ -1,15 +1,15 @@
 {
-    "primary_sentiment": "negative",
+    "primary_sentiment": "neutral",
     "sentiment_distribution": {
         "positive": 0.0,
-        "neutral": 35.0,
-        "negative": 65.0
+        "neutral": 70.0,
+        "negative": 30.0
     },
     "raw_scores": {
         "positive": 0.0,
-        "neutral": 0.35,
-        "negative": 0.65
+        "neutral": 0.7,
+        "negative": 0.3
     },
-    "confidence": 0.65,
+    "confidence": 0.7,
     "model": "LLM (Gemini)"
 }

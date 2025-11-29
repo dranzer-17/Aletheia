@@ -475,7 +475,8 @@ export async function generatePDFReport({
   }
 
   // Footer on last page
-  const pageCount = doc.getNumberOfPages()
+  // Using cast to any because some jsPDF type definitions don't include getNumberOfPages
+  const pageCount = (doc as any).getNumberOfPages()
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i)
     doc.setFontSize(8)

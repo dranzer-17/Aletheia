@@ -1,133 +1,115 @@
 {
-    "claim_id": "3853b4e2-eed6-4e96-ad4c-536036adacb2",
-    "original_claim": "DONAL TRUMP  ATTACKED JOE BIDEN",
-    "verdict": "True",
+    "claim_id": "c49db11f-c4d6-4b7a-baa5-361371e418a3",
+    "original_claim": "will steve die in stranger things season 5",
+    "verdict": "Unverified",
     "score": {
-        "score": 81.0,
-        "confidence": 0.81,
-        "explanation": "The evidence clearly supports the claim that Donald Trump has 'attacked' Joe Biden. Evidence Item 2 (Timestamp: 2025-11-29T07:21:18.031082) explicitly states that 'Donald Trump has deployed the name Biden again and again - it is his political weapon of choice,' and that Trump 'blamed sharp falls in share prices on 'Biden's stock market'.' Furthermore, Evidence Item 3 (Timestamp: 2025-11-29T07:21:18.031076) notes 'fierce criticism from Republicans and Trump' regarding Biden's use of parole, specifically stating that 'Trump has said on the campaign trail that he would end the 'outrageous abuse of parole' by President Biden.' These are direct examples of verbal and political attacks by Trump against Biden."
+        "score": 0.5,
+        "confidence": 0.0,
+        "explanation": "The provided evidence confirms that 'Stranger Things Season 5' is being released in parts during November and December 2025 (Source: Wikipedia, 2025-11-29). However, none of the collected evidence contains any information regarding the fictional character 'Steve' from 'Stranger Things' or whether he will die in Season 5. The other evidence items refer to an atmospheric phenomenon named STEVE (Source: Wikipedia, 2025-11-29), or real-world individuals named Steve Witkoff (e.g., Newsmax, 2025-11-28; Daily Mail Online, 2025-11-28) and Steve McBee Sr. (e.g., People.com, 2025-11-28), which are irrelevant to the user's query about the fictional character's fate. Therefore, there is insufficient evidence to verify the claim."
     },
-    "true_news": "Donald Trump has attacked Joe Biden by using Biden's name as a political weapon, blaming him for stock market declines, and fiercely criticizing his policies such as the use of parole, explicitly stating he would end what he termed 'outrageous abuse of parole' by President Biden.",
+    "true_news": "Evidence is insufficient to confirm or deny whether the character Steve will die in Stranger Things Season 5.",
     "sources_used": [
         {
-            "url": "https://www.independent.ie/life/food-drink/recipes/donal-skehans-pre-festive-feast-to-kick-off-the-season/a930692521.html",
-            "timestamp": "2025-11-28 05:30:00+00:00",
-            "source_name": "Independent.ie",
+            "url": "https://www.newsmax.com/newsmax-tv/darin-gaub-putin-russia/2025/11/28/id/1236341/",
+            "timestamp": "2025-11-28 14:36:39+00:00",
+            "source_name": "Newsmax",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.longfordleader.ie/news/gaa/1952972/abbeylaras-donal-ledwith-appointed-longford-u-20-football-manager.html",
-            "timestamp": "2025-11-26 15:09:19+00:00",
-            "source_name": "Longford Leader",
+            "url": "https://www.dailymail.co.uk/news/article-15335043/Trump-set-recognise-Russian-control-Crimea-occupied-Ukrainian-territories-bid-secure-deal-Putin-end-war.html",
+            "timestamp": "2025-11-28 14:33:09+00:00",
+            "source_name": "Daily Mail Online",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.independent.ie/regionals/clare/news/former-minister-of-state-and-clare-td-donal-carey-has-passed-away/a176040801.html",
-            "timestamp": "2025-11-26 09:42:39+00:00",
-            "source_name": "Independent.ie",
+            "url": "https://people.com/steve-mcbee-sr-spends-last-thanksgiving-ranch-before-prison-11856960",
+            "timestamp": "2025-11-28 14:30:23+00:00",
+            "source_name": "People.com",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.independent.ie/regionals/clare/news/former-minister-of-state-and-clare-td-donal-carey-dies-aged-88/a176040801.html",
-            "timestamp": "2025-11-26 09:42:39+00:00",
-            "source_name": "Independent.ie",
+            "url": "https://www.newsmax.com/newsmax-tv/fred-fleitz-volodymyr-zelenskyy-ukraine/2025/11/28/id/1236335/",
+            "timestamp": "2025-11-28 14:15:12+00:00",
+            "source_name": "Newsmax",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.india.com/entertainment/donal-bisht-breaks-her-silence-on-reports-claiming-abhishek-bajaj-cheated-on-her-wife-with-her-stop-dragging-my-name-into-unnecessary-bullshit-8200653/",
-            "timestamp": "2025-11-25 16:43:51+00:00",
-            "source_name": "India.com",
+            "url": "https://www.usmagazine.com/entertainment/news/mcbee-dynastys-steve-mcbee-sr-got-prison-advice-from-todd-chrisley/",
+            "timestamp": "2025-11-28 13:56:10+00:00",
+            "source_name": "Us Weekly",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.snopes.com/fact-check/steve-jobs-deathbed-speech-2/",
+            "timestamp": "2025-07-09 06:00:03+00:00",
+            "source_name": "Fact Check by Snopes",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.snopes.com/fact-check/steve-harvey-car-accident/",
+            "timestamp": "2024-10-18 13:38:19+00:00",
+            "source_name": "Fact Check by Snopes.com",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.usatoday.com/story/news/factcheck/2021/03/19/fact-check-image-claiming-show-steve-irwin-mr-rogers-composite/4763434001/",
+            "timestamp": "2021-03-19 21:31:56+00:00",
+            "source_name": "Fact Check by USA Today",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.usatoday.com/story/news/factcheck/2021/09/17/fact-check-blues-clues-steve-burns-created-music-after-leaving/8331724002/",
+            "timestamp": "2021-09-17 15:40:24+00:00",
+            "source_name": "Fact Check by USA Today",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.snopes.com/fact-check/steve-wozniak-2-dollar-bill/",
+            "timestamp": "2025-01-04 19:00:04+00:00",
+            "source_name": "Fact Check by Snopes.com",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.factcheck.org/2019/05/the-raccoon-rant-not-written-by-steve-harvey/",
+            "timestamp": "2019-05-10 21:55:53+00:00",
+            "source_name": "Fact Check by FactCheck.org",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.newsmobile.in/nm-fact-checker/fact-check-no-tv-icon-steve-harvey-is-not-dead/",
+            "timestamp": "2025-02-06 00:00:00+00:00",
+            "source_name": "Fact Check by News Mobile",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.snopes.com/fact-check/rogers-steve-irwin-bob-ross/",
+            "timestamp": "2025-07-11 06:00:03+00:00",
+            "source_name": "Fact Check by Snopes",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.snopes.com/fact-check/steve-harvey-booted-off-family-feud/",
+            "timestamp": "2024-05-06 13:49:25+00:00",
+            "source_name": "Fact Check by Snopes",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
-            "timestamp": "2024-06-28 06:17:31+00:00",
-            "source_name": "Fact Check by PolitiFact",
+            "url": "https://www.snopes.com/fact-check/steve-harvey-fired-family-feud/",
+            "timestamp": "2024-05-10 04:00:04+00:00",
+            "source_name": "Fact Check by Snopes",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.reuters.com/world/us/trump-faces-same-reality-biden-americans-despise-higher-prices-2025-11-22/",
-            "timestamp": "2025-11-29 07:21:18.031036",
-            "source_name": "Trump faces same reality as Biden: Americans despise ...",
-            "agent_name": "Political_Agent_Tavily"
+            "url": "https://en.wikipedia.org/wiki/STEVE",
+            "timestamp": "2025-11-29 09:02:51.398813",
+            "source_name": "Wikipedia",
+            "agent_name": "Wikipedia_Agent"
         },
         {
-            "url": "https://www.aljazeera.com/news/2025/11/28/trump-claims-he-will-nullify-executive-orders-joe-biden-signed-by-autopen",
-            "timestamp": "2025-11-29 07:21:18.031068",
-            "source_name": "Trump claims he will nullify executive orders Joe Biden ...",
-            "agent_name": "Political_Agent_Tavily"
-        },
-        {
-            "url": "https://www.bbc.com/news/world-us-canada-65574725",
-            "timestamp": "2025-11-29 07:21:18.031076",
-            "source_name": "How Joe Biden and Donald Trump's border policies compare",
-            "agent_name": "Political_Agent_Tavily"
-        },
-        {
-            "url": "https://www.bbc.com/news/articles/c89g491e8ewo",
-            "timestamp": "2025-11-29 07:21:18.031082",
-            "source_name": "Joe Biden: \"Trump is not behaving like a Republican ...",
-            "agent_name": "Political_Agent_Tavily"
-        },
-        {
-            "url": "https://www.bbc.com/news/world-us-canada-68790777",
-            "timestamp": "2025-11-29 07:21:18.031089",
-            "source_name": "US election 2024: Where Biden and Trump stand on key ...",
-            "agent_name": "Political_Agent_Tavily"
+            "url": "https://en.wikipedia.org/wiki/Stranger_Things",
+            "timestamp": "2025-11-29 09:02:53.773094",
+            "source_name": "Wikipedia",
+            "agent_name": "Wikipedia_Agent"
         }
     ],
     "errors": []
