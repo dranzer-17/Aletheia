@@ -1,85 +1,133 @@
 {
-    "claim_id": "fcef4e3b-5622-4e4a-b6fb-7427f58b372f",
-    "original_claim": "did palash cheat on smriti",
-    "verdict": "False",
+    "claim_id": "3853b4e2-eed6-4e96-ad4c-536036adacb2",
+    "original_claim": "DONAL TRUMP  ATTACKED JOE BIDEN",
+    "verdict": "True",
     "score": {
-        "score": 82.2,
-        "confidence": 0.82,
-        "explanation": "The claim asks if Palash cheated on Smriti. While evidence from Free Press Journal (2025-11-28T07:18:13+00:00) mentions 'Link-Up Rumours With Palash Muchhal Amid Cheating Controversy' involving choreographer Gulnaaz Khan, and Republic World (2025-11-28T10:59:12+00:00) references a 'Palaash Muchhal-Smriti Mandhana Wedding Controversy' where choreographers 'come clean,' none of the provided evidence confirms that Palash Muchhal actually cheated on Smriti Mandhana. On the contrary, more recent evidence from News18 (2025-11-28T10:35:14+00:00) and Times of India (2025-11-28T10:24:00+00:00) explicitly states that the couple's wedding was postponed 'due to family health emergencies' and that 'plans remain on track,' with Palash's mother confirming 'Dono takleef mein hai, shadi jaldi hogi' (Both are in distress, the wedding will happen soon). This directly contradicts the idea that cheating caused any disruption or breakdown in their relationship or wedding plans."
+        "score": 81.0,
+        "confidence": 0.81,
+        "explanation": "The evidence clearly supports the claim that Donald Trump has 'attacked' Joe Biden. Evidence Item 2 (Timestamp: 2025-11-29T07:21:18.031082) explicitly states that 'Donald Trump has deployed the name Biden again and again - it is his political weapon of choice,' and that Trump 'blamed sharp falls in share prices on 'Biden's stock market'.' Furthermore, Evidence Item 3 (Timestamp: 2025-11-29T07:21:18.031076) notes 'fierce criticism from Republicans and Trump' regarding Biden's use of parole, specifically stating that 'Trump has said on the campaign trail that he would end the 'outrageous abuse of parole' by President Biden.' These are direct examples of verbal and political attacks by Trump against Biden."
     },
-    "true_news": "The evidence indicates that Palash Muchhal and Smriti Mandhana are in a relationship and were planning to get married. Their wedding was postponed due to family and personal health emergencies, and their plans to marry are still on track. There were 'link-up rumours' and a 'cheating controversy' involving Palash Muchhal and choreographer Gulnaaz Khan, which Gulnaaz Khan addressed by asking for respect, but the evidence does not confirm that Palash actually cheated.",
+    "true_news": "Donald Trump has attacked Joe Biden by using Biden's name as a political weapon, blaming him for stock market declines, and fiercely criticizing his policies such as the use of parole, explicitly stating he would end what he termed 'outrageous abuse of parole' by President Biden.",
     "sources_used": [
         {
-            "url": "https://www.republicworld.com/entertainment/celebrities/choreographers-come-clean-in-palaash-muchhal-smriti-mandhana-wedding-controversy-just-because-we-know-someone",
-            "timestamp": "2025-11-28 10:59:12+00:00",
-            "source_name": "Republic World",
+            "url": "https://www.independent.ie/life/food-drink/recipes/donal-skehans-pre-festive-feast-to-kick-off-the-season/a930692521.html",
+            "timestamp": "2025-11-28 05:30:00+00:00",
+            "source_name": "Independent.ie",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.news18.com/cricket/smriti-palash-dono-amita-muchhals-comment-goes-viral-amidst-postponed-wedding-ws-l-9737259.html",
-            "timestamp": "2025-11-28 10:35:14+00:00",
-            "source_name": "News18",
+            "url": "https://www.longfordleader.ie/news/gaa/1952972/abbeylaras-donal-ledwith-appointed-longford-u-20-football-manager.html",
+            "timestamp": "2025-11-26 15:09:19+00:00",
+            "source_name": "Longford Leader",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/palash-mucchals-mother-drops-update-on-wedding-with-smriti-mandhana-dono-takleef-mein-hai-shadi-jaldi-hogi/articleshow/125635592.cms",
-            "timestamp": "2025-11-28 10:24:00+00:00",
-            "source_name": "Times of India",
+            "url": "https://www.independent.ie/regionals/clare/news/former-minister-of-state-and-clare-td-donal-carey-has-passed-away/a176040801.html",
+            "timestamp": "2025-11-26 09:42:39+00:00",
+            "source_name": "Independent.ie",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.deccanchronicle.com/entertainment/smriti-mandhana-palash-muchhal-relationship-timeline-quiet-beginnings-stadium-proposal-postponed-wedding-1920208",
-            "timestamp": "2025-11-28 09:52:47+00:00",
-            "source_name": "Deccan Chronicle",
+            "url": "https://www.independent.ie/regionals/clare/news/former-minister-of-state-and-clare-td-donal-carey-dies-aged-88/a176040801.html",
+            "timestamp": "2025-11-26 09:42:39+00:00",
+            "source_name": "Independent.ie",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.freepressjournal.in/entertainment/lets-keep-things-respectful-choreographer-gulnaaz-khan-breaks-silence-on-link-up-rumours-with-palash-muchhal-amid-cheating-controversy",
-            "timestamp": "2025-11-28 07:18:13+00:00",
-            "source_name": "Free Press Journal",
+            "url": "https://www.india.com/entertainment/donal-bisht-breaks-her-silence-on-reports-claiming-abhishek-bajaj-cheated-on-her-wife-with-her-stop-dragging-my-name-into-unnecessary-bullshit-8200653/",
+            "timestamp": "2025-11-25 16:43:51+00:00",
+            "source_name": "India.com",
             "agent_name": "GNews_API_Agent"
         },
         {
-            "url": "https://www.newsmobile.in/nm-fact-checker/fact-check-dont-fall-for-ai-images-of-virat-anushka-attending-smriti-palash-engagement/",
-            "timestamp": "2025-11-28 00:00:00+00:00",
-            "source_name": "Fact Check by News Mobile",
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.vishvasnews.com/ai-check/fact-check-smriti-mandhana-and-palash-muchhal-are-not-married-yet-ai-generated-photo-goes-viral/",
-            "timestamp": "2025-11-26 06:30:29+00:00",
-            "source_name": "Fact Check by \u0935\u093f\u0936\u094d\u0935\u093e\u0938 \u0928\u094d\u092f\u0942\u091c\u093c \u092b\u0948\u0915\u094d\u091f \u091a\u0947\u0915 \u0939\u093f\u0902\u0926\u0940",
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.newsmobile.in/nm-fact-checker/fact-check-smriti-mandhana-and-palash-muchhal-tied-the-knot-heres-the-truth/",
-            "timestamp": "2025-11-18 00:00:00+00:00",
-            "source_name": "Fact Check by News Mobile",
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.newsmobile.in/nm-fact-checker/fact-check-viral-image-of-smriti-mandhana-with-her-father-in-hospital-is-ai-generated/",
-            "timestamp": "2025-11-27 00:00:00+00:00",
-            "source_name": "Fact Check by News Mobile",
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://www.newsmobile.in/nm-fact-checker/fact-check-images-showing-smriti-mandhana-palash-muchhals-haldi-are-ai-generated/",
-            "timestamp": "2025-11-25 00:00:00+00:00",
-            "source_name": "Fact Check by News Mobile",
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
             "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://en.wikipedia.org/wiki/Butea_monosperma",
-            "timestamp": "2025-11-29 04:31:10.406810",
-            "source_name": "Wikipedia",
-            "agent_name": "Wikipedia_Agent"
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
+            "agent_name": "Google_FactCheck_Agent"
         },
         {
-            "url": "https://en.wikipedia.org/wiki/Smriti_Mandhana",
-            "timestamp": "2025-11-29 04:31:12.967729",
-            "source_name": "Wikipedia",
-            "agent_name": "Wikipedia_Agent"
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
+            "agent_name": "Google_FactCheck_Agent"
+        },
+        {
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
+            "agent_name": "Google_FactCheck_Agent"
+        },
+        {
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
+            "agent_name": "Google_FactCheck_Agent"
+        },
+        {
+            "url": "https://www.politifact.com/article/2024/jun/28/2024-presidential-debate-fact-check-biden-trump/",
+            "timestamp": "2024-06-28 06:17:31+00:00",
+            "source_name": "Fact Check by PolitiFact",
+            "agent_name": "Google_FactCheck_Agent"
+        },
+        {
+            "url": "https://www.reuters.com/world/us/trump-faces-same-reality-biden-americans-despise-higher-prices-2025-11-22/",
+            "timestamp": "2025-11-29 07:21:18.031036",
+            "source_name": "Trump faces same reality as Biden: Americans despise ...",
+            "agent_name": "Political_Agent_Tavily"
+        },
+        {
+            "url": "https://www.aljazeera.com/news/2025/11/28/trump-claims-he-will-nullify-executive-orders-joe-biden-signed-by-autopen",
+            "timestamp": "2025-11-29 07:21:18.031068",
+            "source_name": "Trump claims he will nullify executive orders Joe Biden ...",
+            "agent_name": "Political_Agent_Tavily"
+        },
+        {
+            "url": "https://www.bbc.com/news/world-us-canada-65574725",
+            "timestamp": "2025-11-29 07:21:18.031076",
+            "source_name": "How Joe Biden and Donald Trump's border policies compare",
+            "agent_name": "Political_Agent_Tavily"
+        },
+        {
+            "url": "https://www.bbc.com/news/articles/c89g491e8ewo",
+            "timestamp": "2025-11-29 07:21:18.031082",
+            "source_name": "Joe Biden: \"Trump is not behaving like a Republican ...",
+            "agent_name": "Political_Agent_Tavily"
+        },
+        {
+            "url": "https://www.bbc.com/news/world-us-canada-68790777",
+            "timestamp": "2025-11-29 07:21:18.031089",
+            "source_name": "US election 2024: Where Biden and Trump stand on key ...",
+            "agent_name": "Political_Agent_Tavily"
         }
     ],
     "errors": []

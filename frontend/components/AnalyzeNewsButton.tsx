@@ -41,10 +41,10 @@ export function AnalyzeNewsButton({ news, className, size = "md", options }: Ana
       disabled={pending}
       className={cn(
         "relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-60",
-        // Subtle golden glass style
-        "border border-amber-300/50 bg-background/40 text-amber-200",
-        "backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.35)]",
-        "hover:bg-amber-300/15 hover:border-amber-300 hover:text-amber-100 hover:shadow-[0_0_20px_rgba(251,191,36,0.35)]",
+        // Blue style
+        "border border-primary/50 bg-primary/10 text-primary",
+        "shadow-lg",
+        "hover:bg-primary/20 hover:border-primary hover:text-primary hover:shadow-[0_0_20px_rgba(10,127,255,0.35)]",
         "active:scale-[0.97]",
         // Smaller variant
         size === "sm" && "px-3 py-1.5 text-xs",

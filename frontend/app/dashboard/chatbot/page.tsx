@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Mic, Loader2, HelpCircle, X, ExternalLink, Plus, ChevronDown, ChevronUp, MessageSquare, Clock, Copy, Share2 } from "lucide-react";
+import { Send, Mic, Loader2, HelpCircle, X, ExternalLink, Plus, ChevronDown, ChevronUp, MessageSquare, Clock, Copy, Share2, Square } from "lucide-react";
 import { API_ENDPOINTS } from "@/lib/config";
 import dynamic from "next/dynamic";
 
@@ -46,8 +46,12 @@ export default function ChatbotPage() {
   const [expandedSources, setExpandedSources] = useState<Set<string>>(new Set());
   const [showMCPGraph, setShowMCPGraph] = useState(false);
   const [mcpGraphData, setMcpGraphData] = useState<unknown>(null);
-  const [uploadingAudio, setUploadingAudio] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const [uploadingMedia, setUploadingMedia] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingStreamRef = useRef<MediaStream | null>(null);
   const [conversations, setConversations] = useState<Array<{
     conversation_id: string;
     created_at: string;
@@ -58,7 +62,6 @@ export default function ChatbotPage() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const audioInputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
@@ -306,27 +309,119 @@ export default function ChatbotPage() {
     }
   };
 
-  const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingAudio(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetchWithAuth<{ text: string }>(API_ENDPOINTS.CHATBOT.TRANSCRIBE, {
-        method: "POST",
-        body: formData,
-      });
-
-      setInput(response.text);
-      setUploadingAudio(false);
-    } catch (error: unknown) {
-      console.error("Error transcribing audio:", error);
-      setUploadingAudio(false);
+  const stopRecordingStream = useCallback(() => {
+    if (recordingStreamRef.current) {
+      recordingStreamRef.current.getTracks().forEach((track) => track.stop());
+      recordingStreamRef.current = null;
     }
-  };
+  }, []);
+
+  const transcribeRecording = useCallback(
+    async (audioBlob: Blob) => {
+      setIsTranscribing(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", audioBlob, "chat-recording.webm");
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No authentication token found");
+        }
+
+        const response = await fetch(API_ENDPOINTS.CHATBOT.TRANSCRIBE, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.detail || "Transcription failed.");
+        }
+        
+        const text = (payload.text ?? "").trim();
+        if (!text) {
+          throw new Error("No speech detected in the recording.");
+        }
+
+        setInput(text);
+      } catch (error: unknown) {
+        console.error("Error transcribing audio:", error);
+        const errorMessage = error instanceof Error ? error.message : "Failed to transcribe audio.";
+        // Show error to user
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            role: "assistant",
+            content: `<p style="color: red;">Transcription Error: ${errorMessage}</p>`,
+            timestamp: new Date(),
+          },
+        ]);
+      } finally {
+        setIsTranscribing(false);
+      }
+    },
+    []
+  );
+
+  const handleMicClick = useCallback(async () => {
+    if (isTranscribing) return;
+
+    if (typeof window === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      alert("Voice capture is not supported in this browser.");
+      return;
+    }
+    if (!("MediaRecorder" in window)) {
+      alert("MediaRecorder API is unavailable in this browser.");
+      return;
+    }
+
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordingStreamRef.current = stream;
+      const recorder = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        stopRecordingStream();
+        const blob = new Blob(audioChunksRef.current, {
+          type: recorder.mimeType || "audio/webm",
+        });
+        audioChunksRef.current = [];
+        mediaRecorderRef.current = null;
+        setIsRecording(false);
+        if (blob.size === 0) {
+          alert("No audio captured.");
+          return;
+        }
+        await transcribeRecording(blob);
+      };
+
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+      setIsRecording(true);
+    } catch {
+      stopRecordingStream();
+      mediaRecorderRef.current = null;
+      setIsRecording(false);
+      alert("Microphone permission denied or unavailable.");
+    }
+  }, [isRecording, isTranscribing, stopRecordingStream, transcribeRecording]);
 
   const toggleSources = (messageId: string) => {
     setExpandedSources((prev) => {
@@ -367,15 +462,15 @@ export default function ChatbotPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex bg-background backdrop-blur-sm">
+    <div className="h-[calc(100vh-8rem)] flex bg-background">
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border backdrop-blur-md" style={{ backgroundColor: "var(--glass-bg)" }}>
+        <div className="flex items-center justify-between p-4 border-b border-border bg-card">
           <h1 className="text-2xl font-bold text-foreground">AI Assistant</h1>
           <button
             onClick={() => setShowMCPGraph(true)}
-            className="p-2 rounded-lg bg-foreground/5 border border-border hover:bg-foreground/10 transition-colors backdrop-blur-sm"
+            className="p-2 rounded-lg bg-foreground/5 border border-border hover:bg-foreground/10 transition-all"
             title="View MCP Graph"
           >
             <HelpCircle className="w-5 h-5 text-foreground/80" />
@@ -428,7 +523,7 @@ export default function ChatbotPage() {
             >
               <div className={`max-w-[85%] ${msg.role === "user" ? "ml-auto" : ""}`}>
                 {msg.role === "user" ? (
-                  <div className="bg-primary/10 backdrop-blur-md border border-border rounded-2xl rounded-tr-sm px-5 py-3 text-foreground shadow-lg shadow-foreground/10">
+                  <div className="bg-foreground/10 border border-border rounded-2xl rounded-tr-sm px-5 py-3 text-foreground shadow-lg">
                     <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                   </div>
                 ) : (
@@ -445,7 +540,7 @@ export default function ChatbotPage() {
                         [&_strong]:text-foreground [&_strong]:font-semibold
                         [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:my-2 [&_ul]:space-y-1
                         [&_li]:text-foreground/85 [&_li]:leading-relaxed
-                        [&_a]:text-primary [&_a]:hover:text-primary/80 [&_a]:underline`}
+                        [&_a]:text-primary [&_a]:hover:opacity-80 [&_a]:underline`}
                     />
                     {!msg.isStreaming && (
                       <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
@@ -481,7 +576,7 @@ export default function ChatbotPage() {
                           </span>
                         </button>
                         {isSourcesExpanded && (
-                          <div className="mt-2 space-y-2 bg-foreground/5 backdrop-blur-sm border border-border rounded-lg p-3">
+                          <div className="mt-2 space-y-2 bg-foreground/5 border border-border rounded-lg p-3">
                             {msg.sources.map((source, idx) => (
                               <a
                                 key={idx}
@@ -517,7 +612,7 @@ export default function ChatbotPage() {
         
         {loading && progress && (
           <div className="flex justify-start">
-            <div className="bg-foreground/5 backdrop-blur-md border border-border rounded-lg px-4 py-2 rounded-tl-sm">
+            <div className="bg-foreground/10 border border-border rounded-lg px-4 py-2 rounded-tl-sm">
               <div className="flex items-center gap-2 text-sm text-foreground/70">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>{progress}</span>
@@ -530,7 +625,7 @@ export default function ChatbotPage() {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-border p-4 backdrop-blur-md" style={{ backgroundColor: "var(--glass-bg)" }}>
+        <div className="border-t border-border p-4 bg-card">
         <div className="flex gap-2 items-end">
           <input
             ref={fileInputRef}
@@ -543,7 +638,7 @@ export default function ChatbotPage() {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={loading || uploadingMedia}
-            className="p-3 rounded-lg bg-foreground/5 border border-border hover:bg-foreground/10 transition-colors disabled:opacity-50 backdrop-blur-sm"
+            className="p-3 rounded-lg bg-foreground/5 border border-border hover:bg-foreground/10 transition-colors disabled:opacity-50"
             title="Attach media"
           >
             {uploadingMedia ? (
@@ -558,32 +653,31 @@ export default function ChatbotPage() {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
             placeholder="Type your message..."
-            className="flex-1 bg-foreground/5 border border-border rounded-lg px-4 py-3 text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary focus:bg-foreground/10 transition-all backdrop-blur-sm"
+            className="flex-1 bg-foreground/5 border border-border rounded-lg px-4 py-3 text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary focus:bg-foreground/10 transition-all"
             disabled={loading}
           />
-          <input
-            ref={audioInputRef}
-            type="file"
-            accept="audio/*"
-            onChange={handleAudioUpload}
-            className="hidden"
-          />
           <button
-            onClick={() => audioInputRef.current?.click()}
-            disabled={loading || uploadingAudio}
-            className="p-3 rounded-lg bg-foreground/5 border border-border hover:bg-foreground/10 transition-colors disabled:opacity-50 backdrop-blur-sm"
-            title="Voice input"
+            onClick={handleMicClick}
+            disabled={loading || isTranscribing}
+            className={`p-3 rounded-lg border transition-all ${
+              isRecording 
+                ? "bg-primary text-primary-foreground border-primary" 
+                : "bg-foreground/5 border-border hover:bg-foreground/10 text-foreground/80"
+            } disabled:opacity-50`}
+            title={isRecording ? "Stop recording" : "Voice input"}
           >
-            {uploadingAudio ? (
-              <Loader2 className="w-5 h-5 animate-spin text-foreground/80" />
+            {isTranscribing ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : isRecording ? (
+              <Square className="w-5 h-5" />
             ) : (
-              <Mic className="w-5 h-5 text-foreground/80" />
+              <Mic className="w-5 h-5" />
             )}
           </button>
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="p-3 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all backdrop-blur-sm border border-primary"
+            className="p-3 rounded-lg bg-primary text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all border border-primary hover:opacity-90"
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -596,11 +690,11 @@ export default function ChatbotPage() {
       </div>
 
       {/* Right Sidebar - Past Conversations */}
-      <div className="w-80 border-l border-border backdrop-blur-md flex flex-col" style={{ backgroundColor: "var(--glass-bg)" }}>
+      <div className="w-80 border-l border-border bg-card flex flex-col">
         <div className="p-4 border-b border-border">
           <button
             onClick={startNewChat}
-            className="w-full flex items-center gap-2 px-4 py-2.5 bg-foreground/10 hover:bg-foreground/15 border border-border rounded-lg text-foreground transition-colors backdrop-blur-sm"
+            className="w-full flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground border border-primary rounded-lg transition-all hover:opacity-90"
           >
             <MessageSquare className="w-4 h-4" />
             <span className="font-medium">New Chat</span>
@@ -625,10 +719,10 @@ export default function ChatbotPage() {
                 <button
                   key={conv.conversation_id}
                   onClick={() => loadConversation(conv.conversation_id)}
-                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                  className={`w-full text-left p-3 rounded-lg transition-colors border ${
                     conversationId === conv.conversation_id
-                      ? "bg-foreground/15 border border-border"
-                      : "bg-foreground/5 hover:bg-foreground/10 border border-border"
+                      ? "bg-foreground/15 border-border"
+                      : "bg-foreground/5 hover:bg-foreground/10 border-border"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -653,8 +747,8 @@ export default function ChatbotPage() {
 
       {/* MCP Graph Modal */}
       {showMCPGraph && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="backdrop-blur-md border border-border rounded-xl w-full max-w-4xl h-[80vh] flex flex-col shadow-2xl" style={{ backgroundColor: "var(--glass-bg)" }}>
+        <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-border rounded-xl w-full max-w-4xl h-[80vh] flex flex-col shadow-2xl">
             <div className="flex items-center justify-between p-4 border-b border-border">
               <h2 className="text-xl font-bold text-foreground">MCP Pipeline Visualization</h2>
               <button

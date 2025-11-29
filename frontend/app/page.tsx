@@ -53,9 +53,9 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="container mx-auto px-6 py-6 flex justify-between items-center z-20">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_0_15px_rgba(255,255,255,0.1),inset_0_0_15px_rgba(255,255,255,0.1)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-60 pointer-events-none" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)' }} />
-            <ShieldCheck className="text-background w-5 h-5 relative z-10" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center relative overflow-hidden shiny-blue-bg">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-70 pointer-events-none" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)' }} />
+            <ShieldCheck className="text-white w-5 h-5 relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
           </div>
           <span className="text-lg font-semibold tracking-tight text-foreground">ALETHEIA</span>
         </Link>
@@ -90,25 +90,26 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="flex-1 flex flex-col items-center justify-center text-center px-4 relative z-10 mt-[-50px]">
         
-        {/* Badge */}
+        {/* Badge with Shiny Blue */}
         <div className="mb-8 mt-24 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl text-foreground/70 text-xs font-medium relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_0_15px_rgba(255,255,255,0.08),inset_0_0_15px_rgba(255,255,255,0.08)]">
-          <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 via-transparent to-foreground/10 pointer-events-none rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--shiny-blue-glow)]/10 via-transparent to-[var(--shiny-blue-glow)]/10 pointer-events-none rounded-full" />
           <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-transparent opacity-60 pointer-events-none rounded-full" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }} />
-          <span className="relative z-10 w-1.5 h-1.5 rounded-full bg-foreground/60"></span>
-          <span className="relative z-10">New: Voice Clone Detection 2.0</span>
+          <span className="relative z-10 w-1.5 h-1.5 rounded-full shiny-blue-bg" style={{ boxShadow: '0 0 8px var(--shiny-blue-glow), 0 0 12px var(--shiny-blue-glow-strong)' }}></span>
+          <span className="relative z-10">Comprehensive Misinformation Detection Platform</span>
         </div>
 
         {/* Headline */}
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight mb-6 max-w-5xl leading-[1.1] text-foreground">
-          Detect AI-generated <br />
-          content across <span className="text-foreground/80">text,</span> <br />
-          <span className="text-foreground/80">images, audio, and video</span>
+          Detect <span className="shiny-blue-text">Misinformation,</span> <br />
+          Verify <span className="shiny-blue-text">Claims,</span> and <br />
+          Detect <span className="shiny-blue-text">AI & Deepfakes</span>
         </h1>
 
         {/* Subtext */}
         <p className="text-base text-foreground/50 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Explainable results in seconds. Developer-first APIs. Enterprise privacy. 
-          The most comprehensive deepfake detection platform for modern platforms.
+          ALETHEIA is a misinformation detection platform where users can detect misinformation, 
+          verify claims, detect AI-generated content, and identify deepfakes. Get accurate, 
+          explainable results in seconds with our comprehensive verification tools.
         </p>
 
         {/* CTA Buttons */}
@@ -116,19 +117,19 @@ export default function LandingPage() {
           <button className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] hover:bg-foreground/10 text-foreground px-8 py-3.5 rounded-lg font-medium flex items-center gap-2 transition-all cursor-pointer relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_0_20px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)]">
             <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-transparent opacity-60 pointer-events-none rounded-lg" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }} />
             <ShieldCheck className="w-5 h-5 relative z-10" /> 
-            <span className="relative z-10">Try Web Checker</span>
+            <span className="relative z-10">Try Claim Verification</span>
           </button>
           
-          {/* THIS IS THE FIXED BUTTON */}
-          <Link href="/auth/signup" className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] text-foreground hover:bg-foreground/5 px-6 py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all cursor-pointer relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_0_20px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-transparent opacity-60 pointer-events-none rounded-lg" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }} />
-            <ChevronRight className="w-4 h-4 relative z-10" /> 
-            <span className="relative z-10">Start Free with API</span>
+          {/* Shiny Blue CTA Button */}
+          <Link href="/auth/signup" className="shiny-blue-bg text-white px-8 py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all cursor-pointer relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-50 pointer-events-none rounded-lg" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }} />
+            <ChevronRight className="w-4 h-4 relative z-10 drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" /> 
+            <span className="relative z-10 drop-shadow-[0_0_4px_rgba(255,255,255,0.6)]">Get Started Free</span>
           </Link>
         </div>
 
-        {/* Background Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-foreground/5 rounded-full blur-[120px] -z-10" />
+        {/* Background Glow - Shiny Blue */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px] -z-10 opacity-30 dark:opacity-20" style={{ background: 'radial-gradient(circle, var(--shiny-blue-glow-strong) 0%, transparent 70%)' }} />
       </section>
 
       {/* Pricing Section */}
@@ -140,7 +141,8 @@ export default function LandingPage() {
               Simple, transparent <span className="text-foreground/80">pricing</span>
             </h2>
             <p className="text-base text-foreground/50 max-w-2xl mx-auto">
-              Choose the plan that fits your needs. All plans include our core detection features.
+              Choose the plan that fits your needs. All plans include misinformation detection, 
+              claim verification, AI detection, and deepfake detection features.
             </p>
           </div>
 
@@ -156,7 +158,7 @@ export default function LandingPage() {
               <div className="relative z-10 flex flex-col h-full">
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <ShieldCheck className="w-5 h-5 text-foreground/70" />
+                  <ShieldCheck className="w-5 h-5 shiny-blue-text" />
                   <h3 className="text-xl font-semibold text-foreground">Free</h3>
                 </div>
                 <div className="mt-4">
@@ -168,20 +170,28 @@ export default function LandingPage() {
 
               <ul className="flex-1 space-y-3 mb-8">
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">100 API calls/month</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70"><strong>50 credits/month</strong></span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Text detection</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">1 deepfake detection per day</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Image detection</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Misinformation detection</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Basic support</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">AI content detection</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Claim verification</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Community support</span>
                 </li>
               </ul>
 
@@ -192,15 +202,15 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* $20 Plan - Popular */}
-            <div className="bg-[var(--glass-bg)] backdrop-blur-xl border-2 border-foreground/30 rounded-2xl p-8 flex flex-col relative hover:shadow-lg hover:shadow-foreground/10 transition-all -mt-4 shadow-[0_0_0_2px_rgba(255,255,255,0.15),0_0_30px_rgba(255,255,255,0.1),inset_0_0_30px_rgba(255,255,255,0.08)]">
-              {/* Shiny border effect */}
+            {/* $20 Plan - Popular with Shiny Blue */}
+            <div className="bg-[var(--glass-bg)] backdrop-blur-xl shiny-blue-border rounded-2xl p-8 flex flex-col relative hover:shadow-lg transition-all -mt-4">
+              {/* Shiny border glow effect */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-60 pointer-events-none" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }} />
-              {/* Gray gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/10 pointer-events-none rounded-2xl" />
-              {/* Popular Badge */}
+              {/* Shiny blue gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--shiny-blue-glow)]/10 via-transparent to-[var(--shiny-blue-glow)]/5 pointer-events-none rounded-2xl" />
+              {/* Popular Badge with Shiny Blue */}
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                <span className="bg-foreground text-background px-4 py-1.5 rounded-full text-xs font-medium shadow-lg">
+                <span className="shiny-blue-bg text-white px-4 py-1.5 rounded-full text-xs font-medium shadow-lg">
                   Most Popular
                 </span>
               </div>
@@ -208,7 +218,7 @@ export default function LandingPage() {
               <div className="relative z-10 flex flex-col h-full">
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <Zap className="w-5 h-5 text-foreground/80" />
+                  <Zap className="w-5 h-5 shiny-blue-text" />
                   <h3 className="text-xl font-semibold text-foreground">Pro</h3>
                 </div>
                 <div className="mt-4">
@@ -220,30 +230,50 @@ export default function LandingPage() {
 
               <ul className="flex-1 space-y-3 mb-8">
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">10,000 API calls/month</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70"><strong>5,000 credits/month</strong></span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Text, Image & Audio detection</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Unlimited deepfake detection</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Video detection</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70"><strong>Calling agent access</strong></span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70"><strong>WhatsApp agent access</strong></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Advanced misinformation detection</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">AI & deepfake detection</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Multi-source verification</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Real-time claim analysis</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground/70">Priority support</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Advanced analytics</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Detailed analytics & reports</span>
                 </li>
               </ul>
 
-              <button className="w-full bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] hover:bg-foreground/10 text-foreground px-6 py-3 rounded-lg font-medium transition-all cursor-pointer relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_0_20px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)]">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-transparent opacity-60 pointer-events-none rounded-lg" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }} />
-                <span className="relative z-10">Start Free Trial</span>
+              <button className="w-full shiny-blue-bg text-white px-6 py-3 rounded-lg font-medium transition-all cursor-pointer relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-50 pointer-events-none rounded-lg" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }} />
+                <span className="relative z-10 drop-shadow-[0_0_4px_rgba(255,255,255,0.6)]">Start Free Trial</span>
               </button>
               </div>
             </div>
@@ -257,7 +287,7 @@ export default function LandingPage() {
               <div className="relative z-10 flex flex-col h-full">
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <Crown className="w-5 h-5 text-foreground/80" />
+                  <Crown className="w-5 h-5 shiny-blue-text" />
                   <h3 className="text-xl font-semibold text-foreground">Enterprise</h3>
                 </div>
                 <div className="mt-4">
@@ -269,27 +299,43 @@ export default function LandingPage() {
 
               <ul className="flex-1 space-y-3 mb-8">
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Unlimited API calls</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70"><strong>Customizable credit system</strong></span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">All detection types</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Unlimited claim verifications</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/70">Custom models</span>
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">All misinformation detection features</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Advanced AI & deepfake detection</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Calling & WhatsApp agent access</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">Custom verification workflows</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/70">White-label solutions</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground/70">24/7 dedicated support</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground/70">SLA guarantee</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-foreground/80 shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 shiny-blue-text shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground/70">On-premise deployment</span>
                 </li>
               </ul>

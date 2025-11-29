@@ -58,13 +58,13 @@ interface MisinformationClaim {
 // Helper for the Card UI
 function StatCard({ title, value, icon: Icon, trend, color = "text-foreground" }: StatCardProps) {
   return (
-    <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] p-6 rounded-xl hover:border-foreground/20 transition-all relative overflow-hidden">
+    <div className="bg-card border border-border p-6 rounded-xl hover:border-foreground/20 transition-all relative overflow-hidden">
       {/* Gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/10 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
           <span className="text-xs font-medium text-foreground/50 uppercase tracking-wider">{title}</span>
-          <div className="p-2 bg-foreground/10 rounded-lg border border-foreground/10">
+          <div className="p-2 rounded-lg border bg-foreground/10 border-foreground/10">
             <Icon className={`w-4 h-4 ${color}`} />
           </div>
         </div>
@@ -206,24 +206,24 @@ export default function DashboardHome() {
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center text-primary">
-        <Loader2 className="w-8 h-8 animate-spin" />
+      <div className="h-full flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-foreground/60" />
       </div>
     );
   }
 
-  // Shiny bright blue color (#0077b6 but brighter and shinier)
-  const shinyBlue = "#00a8ff"; // Bright cyan-blue, very shiny and vibrant
+  // Shiny blue color - #0a7fff - shiny and glowy
+  const shinyBlue = "#0a7fff";
   
-  // Mock data for charts (static) - using shiny blue for all
+  // Mock data for charts (static) - using appropriate colors
   const verdictData = stats ? [
-    { id: "Real", label: "Real Verified", value: stats.real_verified, color: shinyBlue },
-    { id: "Fake", label: "Fake Detected", value: stats.fake_detected, color: shinyBlue },
-    { id: "Mixed", label: "Mixed/Unverified", value: stats.mixed_unverified, color: shinyBlue },
+    { id: "Real", label: "Real Verified", value: stats.real_verified, color: "#22c55e" }, // Green
+    { id: "Fake", label: "Fake Detected", value: stats.fake_detected, color: "#ef4444" }, // Red
+    { id: "Mixed", label: "Mixed/Unverified", value: stats.mixed_unverified, color: "#eab308" }, // Yellow
   ].filter(item => item.value > 0) : [
-    { id: "Real", label: "Real Verified", value: 45, color: shinyBlue },
-    { id: "Fake", label: "Fake Detected", value: 23, color: shinyBlue },
-    { id: "Mixed", label: "Mixed/Unverified", value: 12, color: shinyBlue },
+    { id: "Real", label: "Real Verified", value: 45, color: "#22c55e" }, // Green
+    { id: "Fake", label: "Fake Detected", value: 23, color: "#ef4444" }, // Red
+    { id: "Mixed", label: "Mixed/Unverified", value: 12, color: "#eab308" }, // Yellow
   ];
 
   // Time series data - static upward trend with natural variation
@@ -297,7 +297,7 @@ export default function DashboardHome() {
           value={statsLoading ? "..." : `${stats?.average_confidence || 0}%`} 
           icon={TrendingUp} 
           trend={statsLoading ? "Loading..." : "Average score"}
-          color="text-blue-400"
+          color="text-foreground"
         />
         <StatCard 
           title="Avg Time" 
@@ -313,7 +313,7 @@ export default function DashboardHome() {
         {/* Left Column - 30% width */}
         <div className="w-[30%] flex flex-col gap-4">
         {/* Top Misinformation Claims Card */}
-        <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-xl p-3 flex flex-col h-[320px]">
+        <div className="bg-card border border-border rounded-xl p-3 flex flex-col h-[320px]">
           <div className="mb-2">
             <h3 className="text-base font-semibold text-foreground">Top Misinformation Claims</h3>
             <p className="text-xs text-foreground/50 mt-0.5">Latest fake claims detected</p>
@@ -328,13 +328,13 @@ export default function DashboardHome() {
                 {topMisinformation.map((claim, idx) => (
                   <div
                     key={claim.claimId}
-                    className="p-3 bg-[var(--glass-bg)] border border-foreground/10 rounded-lg hover:border-foreground/20 hover:shadow-md transition-all cursor-pointer group"
+                    className="p-3 bg-card border border-foreground/10 rounded-lg hover:border-foreground/20 hover:shadow-md transition-all cursor-pointer group"
                     onClick={() => router.push(`/dashboard/analyze/${claim.claimId}`)}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-1">
-                          <span className="text-xs font-bold text-[#00a8ff] bg-[#00a8ff]/10 px-1.5 py-0.5 rounded border border-[#00a8ff]/20">
+                          <span className="text-xs font-bold text-foreground/60 bg-foreground/10 px-1.5 py-0.5 rounded border border-foreground/20">
                             #{idx + 1}
                           </span>
                           <span className="text-xs text-foreground/50">
@@ -367,7 +367,7 @@ export default function DashboardHome() {
         </div>
 
         {/* Trending Topics Section */}
-        <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-xl p-3 flex flex-col h-[320px]">
+        <div className="bg-card border border-border rounded-xl p-3 flex flex-col h-[320px]">
           <div className="mb-1.5">
             <h3 className="text-base font-semibold text-foreground">Trending Topics</h3>
             <p className="text-xs text-foreground/50 mt-0.5">Most analyzed keywords</p>
@@ -382,10 +382,10 @@ export default function DashboardHome() {
                 {trendingTopics.map((topic, idx) => (
                   <div
                     key={topic.topic}
-                    className="flex items-center justify-between p-2 bg-[var(--glass-bg)] border border-foreground/10 rounded-lg hover:border-foreground/20 transition-all"
+                    className="flex items-center justify-between p-2 bg-card border border-foreground/10 rounded-lg hover:border-foreground/20 transition-all"
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <span className="text-xs font-bold text-[#00a8ff] bg-[#00a8ff]/10 px-1.5 py-0.5 rounded border border-[#00a8ff]/20 flex-shrink-0">
+                      <span className="text-xs font-bold text-foreground/60 bg-foreground/10 px-1.5 py-0.5 rounded border border-foreground/20 flex-shrink-0">
                         #{idx + 1}
                       </span>
                       <span className="text-xs font-medium text-foreground truncate">
@@ -410,7 +410,7 @@ export default function DashboardHome() {
         {/* Charts Grid - 70% width */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Verdict Distribution Pie Chart */}
-        <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-xl p-6">
+        <div className="bg-card border border-border rounded-xl p-6">
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-foreground">Verdict Distribution</h3>
             <p className="text-xs text-foreground/50 mt-1">Breakdown of claim verdicts</p>
@@ -455,7 +455,7 @@ export default function DashboardHome() {
         </div>
 
         {/* Claims Over Time Line Chart */}
-        <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-xl p-6">
+        <div className="bg-card border border-border rounded-xl p-6">
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-foreground">Claims Over Time</h3>
             <p className="text-xs text-foreground/50 mt-1">Weekly analysis activity</p>

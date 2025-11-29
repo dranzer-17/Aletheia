@@ -187,49 +187,48 @@ export default function SocialGraphPage() {
     <>
       <div className="mx-auto max-w-6xl space-y-8 pb-16">
         <header className="space-y-3">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/40">Network intelligence</p>
-        <h1 className="text-4xl font-semibold text-white">Reddit Social Graph</h1>
-        <p className="max-w-3xl text-sm text-white/70">
+        <p className="text-xs uppercase tracking-[0.3em] text-foreground/50">Network intelligence</p>
+        <h1 className="text-4xl font-semibold text-foreground">Reddit Social Graph</h1>
+        <p className="max-w-3xl text-sm text-foreground/70">
           Visualize how Reddit users, posts, and comments connect across a topic. Enter a keyword and
           choose a rolling time window to pull up to 50 posts, 200 comments, and 50 high-activity
           accounts. The graph clusters interactions and lets you inspect any node.
         </p>
       </header>
 
-      <section className="rounded-3xl border border-white/10 bg-linear-to-br from-white/5 via-white/2 to-transparent p-6 shadow-[0_30px_140px_rgba(7,8,25,0.45)] backdrop-blur">
+      <section className="rounded-3xl border border-border bg-card p-6 shadow-lg">
         <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-[2fr_auto_auto] items-end">
-          <label className="flex flex-col gap-2 text-sm font-medium text-white/80">
+          <label className="flex flex-col gap-2 text-sm font-medium text-foreground">
             Keyword
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
               <input
                 type="text"
                 value={keyword}
                 onChange={(event) => setKeyword(event.target.value)}
                 placeholder="e.g. elections, vaccine"
-                className="w-full rounded-2xl border border-white/10 bg-black/30 py-3 pl-10 pr-4 text-white placeholder:text-white/30 focus:border-amber-300 focus:outline-none"
+                className="w-full rounded-2xl border border-border bg-background py-3 pl-10 pr-4 text-foreground placeholder:text-foreground/40 focus:border-primary focus:outline-none"
               />
             </div>
           </label>
 
-          <div className="flex flex-col gap-2 text-sm font-medium text-white/80">
+          <div className="flex flex-col gap-2 text-sm font-medium text-foreground">
             Time range
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button className="flex w-full items-center justify-between rounded-2xl border border-white/15 bg-black/30 px-4 py-2 text-left text-sm font-semibold text-white/80 backdrop-blur transition hover:text-white">
+                <button className="flex w-full items-center justify-between rounded-2xl border border-border bg-background px-4 py-2 text-left text-sm font-semibold text-foreground transition hover:bg-foreground/5">
                   <span className="inline-flex items-center gap-2">
-                    <CalendarRange className="h-4 w-4 text-white/50" />
+                    <CalendarRange className="h-4 w-4 text-foreground/50" />
                     {RANGE_OPTIONS.find((option) => option.value === timeRange)?.label}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-white/50" />
+                  <ChevronDown className="h-4 w-4 text-foreground/50" />
                 </button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content
                   align="end"
-                  className="z-50 mt-2 min-w-[200px] overflow-hidden rounded-xl border border-(--glass-border) bg-(--glass-bg) p-1 text-white shadow-xl backdrop-blur-xl"
+                  className="z-50 mt-2 min-w-[200px] overflow-hidden rounded-xl border border-border bg-card p-1 text-foreground shadow-xl"
                 >
-                  <div className="pointer-events-none absolute inset-0 rounded-xl bg-linear-to-br from-foreground/5 via-transparent to-foreground/10" />
                   {RANGE_OPTIONS.map((option) => (
                     <DropdownMenu.Item
                       key={option.value}
@@ -238,8 +237,8 @@ export default function SocialGraphPage() {
                         setTimeRange(option.value)
                       }}
                       className={cn(
-                        "relative z-10 flex select-none items-center gap-3 rounded-lg px-3 py-2.5 text-sm outline-none transition-colors hover:bg-white/5 focus:bg-white/5",
-                        option.value === timeRange && "bg-white/5"
+                        "relative z-10 flex select-none items-center gap-3 rounded-lg px-3 py-2.5 text-sm outline-none transition-colors hover:bg-foreground/10 focus:bg-foreground/10",
+                        option.value === timeRange && "bg-foreground/10"
                       )}
                     >
                       {option.label}
@@ -254,8 +253,8 @@ export default function SocialGraphPage() {
             type="submit"
             className={cn(
               "self-end rounded-2xl px-6 py-3 text-sm font-semibold uppercase tracking-wide",
-              "bg-linear-to-r from-amber-400/80 to-amber-200/80 text-black",
-              "shadow-[0_15px_35px_rgba(251,191,36,0.35)] transition hover:scale-[1.01] hover:shadow-[0_20px_45px_rgba(251,191,36,0.4)]",
+              "border border-primary/50 bg-primary/10 text-primary",
+              "shadow-lg transition hover:bg-primary/20 hover:border-primary hover:shadow-[0_0_20px_rgba(10,127,255,0.35)]",
               "disabled:cursor-not-allowed disabled:opacity-50"
             )}
             disabled={loading}
@@ -271,14 +270,14 @@ export default function SocialGraphPage() {
         </form>
 
         {error && (
-          <div className="mt-4 flex items-center gap-2 rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+          <div className="mt-4 flex items-center gap-2 rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
             <AlertCircle className="h-4 w-4" />
             <p>{error}</p>
           </div>
         )}
 
         {graphData && (
-          <p className="mt-3 text-xs uppercase tracking-[0.2em] text-white/50">
+          <p className="mt-3 text-xs uppercase tracking-[0.2em] text-foreground/50">
             Range · {RANGE_LABELS[graphData.query.time_range] ?? graphData.query.time_range}
           </p>
         )}
@@ -292,7 +291,7 @@ export default function SocialGraphPage() {
         />
 
         <div className="pointer-events-none absolute inset-0">
-          <div className="pointer-events-auto absolute left-6 top-6 flex flex-wrap gap-3 rounded-3xl border border-white/10 bg-black/50 px-5 py-3 text-xs uppercase tracking-[0.2em] text-white/70 backdrop-blur">
+          <div className="pointer-events-auto absolute left-6 top-6 flex flex-wrap gap-3 rounded-3xl border border-border bg-card px-5 py-3 text-xs uppercase tracking-[0.2em] text-foreground shadow-lg">
             {[
               { label: "Posts", color: redditNodePalette.post },
               { label: "Comments", color: redditNodePalette.comment },
@@ -317,22 +316,22 @@ export default function SocialGraphPage() {
                 animation: { duration: 600, easingFunction: "easeInOutQuad" },
               })
             }
-            className="pointer-events-auto absolute right-6 top-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/60 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 backdrop-blur transition hover:text-white"
+            className="pointer-events-auto absolute right-6 top-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-foreground shadow-lg transition hover:bg-foreground/10"
           >
             <RefreshCcw className="h-3.5 w-3.5" />
             Reset focus
           </button>
 
           {selectedNode && !historyOpen && (
-            <div className="pointer-events-auto absolute bottom-6 right-6 w-full max-w-sm rounded-3xl border border-white/10 bg-black/70 p-5 text-sm text-white backdrop-blur">
+            <div className="pointer-events-auto absolute bottom-6 right-6 w-full max-w-sm rounded-3xl border border-border bg-card p-5 text-sm text-foreground shadow-lg">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                <p className="text-xs uppercase tracking-[0.3em] text-foreground/50">
                   {selectedNode.type}
                 </p>
                 <button
                   type="button"
                   onClick={() => setSelectedNode(null)}
-                  className="text-white/60 transition hover:text-white"
+                  className="text-foreground/60 transition hover:text-foreground"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -349,14 +348,14 @@ export default function SocialGraphPage() {
               {selectedNode.type === "post" && "title" in selectedNode.payload && (
                 <div className="space-y-2">
                   <p className="text-lg font-semibold">{selectedNode.payload.title}</p>
-                  <p className="text-white/70">u/{selectedNode.payload.author}</p>
+                  <p className="text-foreground/70">u/{selectedNode.payload.author}</p>
                   <p>Score: {selectedNode.payload.score}</p>
                   <p>Comments: {selectedNode.payload.num_comments}</p>
                   <a
                     href={selectedNode.payload.permalink}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-amber-200 hover:text-amber-100"
+                    className="inline-flex items-center gap-2 text-primary hover:text-primary/80"
                   >
                     View on Reddit <Share2 className="h-3 w-3" />
                   </a>
@@ -366,8 +365,8 @@ export default function SocialGraphPage() {
               {selectedNode.type === "comment" && "body" in selectedNode.payload && (
                 <div className="space-y-2">
                   <p className="font-semibold">Comment</p>
-                  <p className="text-white/80">{selectedNode.payload.body || "[deleted]"}</p>
-                  <p className="text-white/70">u/{selectedNode.payload.author}</p>
+                  <p className="text-foreground/80">{selectedNode.payload.body || "[deleted]"}</p>
+                  <p className="text-foreground/70">u/{selectedNode.payload.author}</p>
                   <p>Score: {selectedNode.payload.score}</p>
                 </div>
               )}
@@ -379,42 +378,42 @@ export default function SocialGraphPage() {
       <button
         type="button"
         onClick={handleToggleHistory}
-        className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-3xl border border-white/15 bg-black/70 text-white/70 shadow-[0_15px_40px_rgba(0,0,0,0.45)] backdrop-blur transition hover:text-white"
+        className="fixed bottom-20 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-3xl border border-border bg-card text-foreground shadow-lg transition hover:bg-foreground/10"
       >
         <History className="h-5 w-5" />
       </button>
 
       {historyOpen && (
-        <div className="fixed bottom-24 right-6 z-40 flex h-[70vh] w-80 flex-col rounded-3xl border border-white/10 bg-black/85 p-5 text-sm text-white backdrop-blur">
+        <div className="fixed bottom-40 right-6 z-40 flex h-[60vh] w-80 flex-col rounded-3xl border border-border bg-card p-5 text-sm text-foreground shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="text-xs uppercase tracking-[0.3em] text-white/60">Past graphs</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/60">Past graphs</p>
             <button
               type="button"
               onClick={() => setHistoryOpen(false)}
-              className="text-white/60 transition hover:text-white"
+              className="text-foreground/60 transition hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
-          {historyError && <p className="mt-3 text-xs text-red-300">{historyError}</p>}
+          {historyError && <p className="mt-3 text-xs text-red-600 dark:text-red-400">{historyError}</p>}
           <div className="mt-4 flex-1 overflow-y-auto space-y-2">
             {historyLoading && (
-              <div className="flex items-center justify-center py-6 text-white/60">
+              <div className="flex items-center justify-center py-6 text-foreground/60">
                 <Loader2 className="h-4 w-4 animate-spin" />
               </div>
             )}
             {!historyLoading && historyItems.length === 0 && (
-              <p className="text-xs text-white/50">No saved graphs yet.</p>
+              <p className="text-xs text-foreground/50">No saved graphs yet.</p>
             )}
             {historyItems.map((item) => (
               <button
                 key={item.graph_id}
                 type="button"
                 onClick={() => handleLoadSavedGraph(item.graph_id)}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:bg-white/10"
+                className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-left transition hover:bg-foreground/10"
               >
-                <p className="text-sm font-semibold text-white">{item.keyword}</p>
-                <p className="text-xs text-white/60">
+                <p className="text-sm font-semibold text-foreground">{item.keyword}</p>
+                <p className="text-xs text-foreground/60">
                   {RANGE_LABELS[item.time_range] ?? item.time_range} ·{" "}
                   {new Date(item.created_at).toLocaleString()}
                 </p>

@@ -3,15 +3,19 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* ACCENT COLOR - Professional Blue */
-  --accent-color: #4141e0;
+  /* SHINY BLUE ACCENT - Brighter blue with glow effects */
+  --shiny-blue: #0a7fff;
+  --shiny-blue-light: #1a8fff;
+  --shiny-blue-dark: #0966d9;
+  --shiny-blue-glow: rgba(10, 127, 255, 0.4);
+  --shiny-blue-glow-strong: rgba(10, 127, 255, 0.6);
   
-  /* LIGHT MODE - Professional Black & White */
+  /* LIGHT MODE - Black & White + Shiny Blue */
   --background: #ffffff;
   --foreground: #0a0a0a;
   --card: rgba(255, 255, 255, 0.8);
   --card-border: rgba(0, 0, 0, 0.08);
-  --primary: var(--accent-color);
+  --primary: var(--shiny-blue);
   --primary-foreground: #ffffff;
   
   /* Glass Effect */
@@ -25,12 +29,12 @@
 }
 
 :root.dark {
-  /* DARK MODE - Professional Black & White */
+  /* DARK MODE - Black & White + Shiny Blue */
   --background: #0a0a0a;
   --foreground: #fafafa;
   --card: rgba(20, 20, 20, 0.8);
   --card-border: rgba(255, 255, 255, 0.1);
-  --primary: var(--accent-color);
+  --primary: var(--shiny-blue);
   --primary-foreground: #ffffff;
 
   /* Glass Effect */
@@ -41,6 +45,48 @@
   --secondary-bg: transparent;
   --secondary-text: #fafafa;
   --secondary-border: rgba(255, 255, 255, 0.15);
+}
+
+/* Shiny Blue Glow Animation */
+@keyframes shiny-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--shiny-blue-glow),
+                0 0 40px var(--shiny-blue-glow),
+                0 0 60px var(--shiny-blue-glow-strong),
+                inset 0 0 20px var(--shiny-blue-glow);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--shiny-blue-glow-strong),
+                0 0 60px var(--shiny-blue-glow-strong),
+                0 0 90px var(--shiny-blue-glow-strong),
+                inset 0 0 30px var(--shiny-blue-glow-strong);
+  }
+}
+
+/* Shiny Blue Text Glow */
+.shiny-blue-text {
+  color: var(--shiny-blue);
+  text-shadow: 0 0 10px var(--shiny-blue-glow),
+               0 0 20px var(--shiny-blue-glow),
+               0 0 30px var(--shiny-blue-glow-strong);
+}
+
+/* Shiny Blue Background with Glow */
+.shiny-blue-bg {
+  background: linear-gradient(135deg, var(--shiny-blue) 0%, var(--shiny-blue-light) 50%, var(--shiny-blue-dark) 100%);
+  box-shadow: 0 0 20px var(--shiny-blue-glow),
+              0 0 40px var(--shiny-blue-glow),
+              0 0 60px var(--shiny-blue-glow-strong),
+              inset 0 0 20px rgba(255, 255, 255, 0.2);
+  animation: shiny-glow 3s ease-in-out infinite;
+}
+
+/* Shiny Blue Border with Glow */
+.shiny-blue-border {
+  border: 2px solid var(--shiny-blue);
+  box-shadow: 0 0 10px var(--shiny-blue-glow),
+              0 0 20px var(--shiny-blue-glow),
+              inset 0 0 10px var(--shiny-blue-glow);
 }
 
 /* --- CONFIGURATION --- */

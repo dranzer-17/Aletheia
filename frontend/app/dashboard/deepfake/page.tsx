@@ -98,7 +98,7 @@ export default function DeepfakeDetection() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Upload & Preview Section */}
-        <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl shadow-xl p-6">
+        <div className="bg-card border border-border rounded-2xl shadow-xl p-6">
           <h2 className="text-xl font-semibold text-foreground mb-4">Select File</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="relative">
@@ -111,7 +111,7 @@ export default function DeepfakeDetection() {
               />
               <label
                 htmlFor="file-upload"
-                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-[var(--glass-border)] rounded-xl cursor-pointer hover:border-foreground/30 transition-all bg-[var(--glass-bg)] hover:bg-foreground/5"
+                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-foreground/30 transition-all bg-card hover:bg-foreground/5"
               >
                 {!file ? (
                   <>
@@ -131,7 +131,7 @@ export default function DeepfakeDetection() {
             </div>
 
             {previewUrl && file && (
-              <div className="rounded-xl overflow-hidden border border-[var(--glass-border)] bg-black">
+              <div className="rounded-xl overflow-hidden border border-border bg-black">
                 {file.type.startsWith('video/') ? (
                   <video
                     src={previewUrl}
@@ -170,7 +170,7 @@ export default function DeepfakeDetection() {
         </div>
 
         {/* Results Section */}
-        <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl shadow-xl p-6">
+        <div className="bg-card border border-border rounded-2xl shadow-xl p-6">
           <h2 className="text-xl font-semibold text-foreground mb-4">Analysis Results</h2>
           
           {!result && !error && !loading && (
@@ -196,7 +196,7 @@ export default function DeepfakeDetection() {
           {result && (
             <div className="space-y-6">
               {/* Verdict Card */}
-              <div className={`backdrop-blur-lg rounded-xl p-6 border-2 ${
+              <div className={`bg-card rounded-xl p-6 border-2 ${
                 result.prediction === 'REAL' 
                   ? 'bg-green-500/10 border-green-500/50' 
                   : 'bg-red-500/10 border-red-500/50'
@@ -218,7 +218,7 @@ export default function DeepfakeDetection() {
               </div>
 
               {/* Analysis Summary */}
-              <div className="backdrop-blur-lg bg-foreground/5 rounded-xl p-6 border border-[var(--glass-border)]">
+              <div className="bg-card rounded-xl p-6 border border-border">
                 <h3 className="text-sm font-medium text-foreground/60 mb-3">Analysis Summary</h3>
                 <p className="text-foreground/70 text-sm leading-relaxed">
                   {result.prediction === 'REAL' 
@@ -229,7 +229,7 @@ export default function DeepfakeDetection() {
               </div>
 
               {/* Confidence Meter */}
-              <div className="backdrop-blur-lg bg-foreground/5 rounded-xl p-6 border border-[var(--glass-border)]">
+              <div className="bg-card rounded-xl p-6 border border-border">
                 <h3 className="text-sm font-medium text-foreground/60 mb-3">Confidence Level</h3>
                 <div className="w-full bg-foreground/10 rounded-full h-3 overflow-hidden">
                   <div
@@ -248,7 +248,7 @@ export default function DeepfakeDetection() {
               </div>
 
               {/* File Details */}
-              <div className="backdrop-blur-lg bg-foreground/5 rounded-xl p-6 border border-[var(--glass-border)]">
+              <div className="bg-card rounded-xl p-6 border border-border">
                 <h3 className="text-sm font-medium text-foreground/60 mb-4">File Details</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">

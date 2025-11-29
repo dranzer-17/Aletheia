@@ -58,12 +58,16 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
   const edgesRef = useRef<DataSet<GraphVisEdge> | null>(null)
   const batchFrame = useRef<number | null>(null)
   const [foregroundColor, setForegroundColor] = useState("#ffffff")
+  const [isLightMode, setIsLightMode] = useState(false)
 
   useEffect(() => {
     if (typeof window === "undefined") return
     const updateColor = () => {
       const value = getComputedStyle(document.documentElement).getPropertyValue("--foreground").trim()
       setForegroundColor(value || "#ffffff")
+      // Check if light mode (foreground is dark, typically #0a0a0a or similar)
+      const bgValue = getComputedStyle(document.documentElement).getPropertyValue("--background").trim()
+      setIsLightMode(bgValue === "#ffffff" || bgValue === "rgb(255, 255, 255)")
     }
     updateColor()
     const media = window.matchMedia("(prefers-color-scheme: dark)")
@@ -73,12 +77,19 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
     } else {
       media.addListener(handler)
     }
+    // Also listen to theme changes via class
+    const observer = new MutationObserver(updateColor)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
     return () => {
       if (media.removeEventListener) {
         media.removeEventListener("change", handler)
       } else {
         media.removeListener(handler)
       }
+      observer.disconnect()
     }
   }, [])
 
@@ -106,7 +117,7 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
         borderWidth: 2,
         shadow: true,
         font: {
-          color: "#e6e6e6",
+          color: foregroundColor || "var(--foreground)",
         },
       },
       edges: {
@@ -114,7 +125,7 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
           enabled: true,
           type: "continuous",
         },
-        color: "#4b5563",
+        color: isLightMode ? "#0056b3" : "#0a7fff",
       },
       interaction: {
         hover: true,
@@ -122,7 +133,7 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
         keyboard: false,
       },
     }),
-    []
+    [foregroundColor, isLightMode]
   )
 
   const applyHighlight = (focusedId: string | null) => {
@@ -140,12 +151,11 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
       const isNeighbor = connected?.has(node.id as string) ?? false
       const hasFocus = Boolean(focusedId)
       const isActive = hasFocus && (isFocused || isNeighbor)
-      const baseColor = node.baseColor || (typeof node.color === "string" ? node.color : "#94a3b8")
-      const background = hasFocus
-        ? hexToRgba(baseColor, isActive ? 0.98 : 0.15)
-        : baseColor
-      const border = hasFocus
-        ? (isActive ? "#facc15" : hexToRgba(baseColor, 0.25))
+      const baseColor = node.baseColor || (typeof node.color === "string" ? node.color : "#0a7fff")
+      // Keep all nodes at full opacity - only highlight active ones with border
+      const background = baseColor
+      const border = hasFocus && isActive
+        ? (isFocused ? "#facc15" : "#0a7fff")
         : baseColor
       return {
         id: node.id,
@@ -170,12 +180,29 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
         !focusedId ||
         (connected?.has(edge.from as string) && connected?.has(edge.to as string))
 
-      const baseColor = edge.baseColor ?? "#94a3b8"
+      // Make edges darker/brighter in light mode
+      let baseColor = edge.baseColor ?? "#0a7fff"
+      if (isLightMode && baseColor) {
+        // Darken and brighten edge colors for light mode
+        if (baseColor === "#0a7fff") {
+          baseColor = "#0056b3" // Darker blue for light mode
+        } else if (baseColor === "#fde047") {
+          baseColor = "#f59e0b" // Darker yellow
+        } else if (baseColor === "#fb923c") {
+          baseColor = "#ea580c" // Darker orange
+        } else if (baseColor === "#93c5fd") {
+          baseColor = "#2563eb" // Darker light blue
+        } else if (baseColor === "#fb7185") {
+          baseColor = "#dc2626" // Darker pink/red
+        }
+      }
+      
+      // Keep all edges at full opacity - only highlight focused ones with width
       return {
         id: edge.id,
-        width: involvesFocused ? (edge.width ?? 2) : 1,
+        width: involvesFocused ? (edge.width ?? 2) : (edge.width ?? 2),
         color: {
-          color: involvesFocused ? baseColor : hexToRgba(baseColor, focusedId ? 0.15 : 1),
+          color: baseColor,
         },
       }
     })
@@ -269,7 +296,19 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
     })
 
     data.edges.forEach((edge) => {
-      const color = redditEdgePalette[edge.edge_type] ?? "#94a3b8"
+      let color = redditEdgePalette[edge.edge_type] ?? "#0a7fff"
+      // Make edges darker/brighter in light mode
+      if (isLightMode) {
+        if (color === "#0a7fff" || color === "#93c5fd") {
+          color = "#0056b3" // Darker blue for light mode
+        } else if (color === "#fde047") {
+          color = "#f59e0b" // Darker yellow
+        } else if (color === "#fb923c") {
+          color = "#ea580c" // Darker orange
+        } else if (color === "#fb7185") {
+          color = "#dc2626" // Darker pink/red
+        }
+      }
       preparedEdges.push({
         id: edge.id,
         from: edge.from,
@@ -348,14 +387,14 @@ export function RedditNetworkGraph({ data, onSelect, onNetworkReady }: RedditNet
       networkRef.current?.destroy()
       networkRef.current = null
     }
-  }, [data, networkOptions, onSelect])
+  }, [data, networkOptions, onSelect, isLightMode, foregroundColor])
 
   return (
-    <div className="relative h-[720px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/20">
+    <div className="relative h-[720px] w-full overflow-hidden rounded-3xl border border-border bg-background">
       {!data && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-sm text-white/60">
-          <p className="text-base font-semibold text-white/80">No graph data yet</p>
-          <p className="mt-2 max-w-md text-white/60">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-sm text-foreground/60">
+          <p className="text-base font-semibold text-foreground">No graph data yet</p>
+          <p className="mt-2 max-w-md text-foreground/60">
             Submit a keyword and time range to build a Reddit interaction graph.
           </p>
         </div>

@@ -19,7 +19,7 @@ export default function DashboardLayout({
       <main className="flex-1 ml-72 flex flex-col">
         
         {/* TOP HEADER */}
-        <header className="h-16 border-b border-[var(--glass-border)] flex items-center justify-between px-8 bg-[var(--glass-bg)] backdrop-blur-xl sticky top-0 z-30">
+        <header className="h-16 border-b border-border flex items-center justify-between px-8 bg-card sticky top-0 z-30">
           <h2 className="font-medium text-foreground/90 text-sm tracking-tight">Dashboard</h2>
           <div className="flex items-center gap-3">
             <ModeToggle />

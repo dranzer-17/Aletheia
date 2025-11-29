@@ -1,21 +1,21 @@
 {
-    "primary_emotion": "surprise",
+    "primary_emotion": "anger",
     "emotion_distribution": {
         "joy": 0.0,
-        "anger": 10.0,
-        "sadness": 20.0,
-        "fear": 25.0,
-        "surprise": 35.0,
-        "disgust": 10.0
+        "anger": 33.3,
+        "sadness": 14.6,
+        "fear": 16.7,
+        "surprise": 10.4,
+        "disgust": 25.0
     },
     "raw_scores": {
         "joy": 0.0,
-        "anger": 0.1,
-        "sadness": 0.2,
-        "fear": 0.25,
-        "surprise": 0.35,
-        "disgust": 0.1
+        "anger": 0.8,
+        "sadness": 0.35,
+        "fear": 0.4,
+        "surprise": 0.25,
+        "disgust": 0.6
     },
-    "confidence": 0.35,
+    "confidence": 0.8,
     "model": "LLM (Gemini)"
 }

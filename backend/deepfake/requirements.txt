@@ -1,0 +1,10 @@
+fastapi
+pydantic
+pymongo
+torch
+torchvision
+timm
+opencv-python
+face-recognition
+pyyaml
+# Add other dependencies as needed for your model

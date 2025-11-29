@@ -582,7 +582,7 @@ export default function CesiumGlobe({
     <div className="relative w-full h-full bg-black">
       <div ref={viewerRef} className="w-full h-full" style={{ backgroundColor: '#000', cursor: 'crosshair' }} />
       {latLon && (
-        <div className="absolute top-4 left-4 glass rounded-lg px-4 py-3 text-sm font-mono z-10 text-white border border-white/30 bg-black/50 backdrop-blur-md shadow-lg">
+        <div className="absolute top-4 left-4 rounded-lg px-4 py-3 text-sm font-mono z-10 text-white border border-white/30 bg-black shadow-lg">
           <div className="font-semibold text-blue-400">📍 Coordinates</div>
           <div className="mt-1 text-white">Lat: <span className="text-green-400">{latLon.lat.toFixed(4)}</span></div>
           <div className="text-white">Lon: <span className="text-green-400">{latLon.lon.toFixed(4)}</span></div>

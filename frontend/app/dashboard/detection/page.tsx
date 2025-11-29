@@ -131,8 +131,8 @@ export default function DetectionPage() {
   );
 
   const pollForVerdict = useCallback(
-    async (claimId: string) => {
-      const maxAttempts = 30;
+    async (claimId: string): Promise<ClaimVerdict> => {
+      const maxAttempts = 75;  // 5 minutes at 4s intervals (75 * 4 = 300 seconds = 5 minutes)
       const interval = 4000;
 
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -159,7 +159,7 @@ export default function DetectionPage() {
         await sleep(interval);
       }
 
-      throw new Error("Analysis timed out. Please try again later.");
+      throw new Error("Analysis timed out after 5 minutes. Please try again.");
     },
     [fetchWithAuth]
   );
@@ -1022,12 +1022,12 @@ export default function DetectionPage() {
         </div>
       )}
 
-      <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] p-6 rounded-3xl shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_20px_80px_rgba(0,0,0,0.35)] space-y-3">
+      <div className="bg-card border border-border p-6 rounded-3xl shadow-lg space-y-3">
         {inputMode === "text" ? (
           <div className="relative">
             <textarea
               ref={textareaRef}
-              className="w-full min-h-[10rem] max-h-[25rem] bg-background/60 border border-[var(--glass-border)] rounded-2xl p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none transition-all overflow-auto"
+              className="w-full min-h-[10rem] max-h-[25rem] bg-card border border-border rounded-2xl p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none transition-all overflow-auto"
               placeholder="e.g. The government announced a new policy that ..."
               value={claimText}
               onChange={(e) => handleClaimTextChange(e.target.value)}
@@ -1038,7 +1038,7 @@ export default function DetectionPage() {
             type="url"
             value={claimUrl}
             onChange={(e) => setClaimUrl(e.target.value)}
-            className="w-full bg-background/60 border border-[var(--glass-border)] rounded-2xl p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+            className="w-full bg-card border border-border rounded-2xl p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
             placeholder="https://example.com/news-article"
           />
         )}
@@ -1048,7 +1048,7 @@ export default function DetectionPage() {
             className={`text-xs tracking-wide uppercase rounded-full px-4 py-1.5 transition-all border ${
               isUrlMode
                 ? "bg-foreground text-background border-foreground"
-                : "bg-background/50 text-foreground/70 border-[var(--glass-border)] hover:text-foreground"
+                : "bg-card text-foreground/70 border-border hover:text-foreground"
             }`}
           >
             {isUrlMode ? "URL mode active" : "Enable URL mode"}
@@ -1061,10 +1061,10 @@ export default function DetectionPage() {
                   setShowMediaMenu((prev) => !prev);
                 }}
                 disabled={isUrlMode}
-                className={`w-11 h-11 rounded-2xl border border-[var(--glass-border)] flex items-center justify-center transition-all shadow-[0_10px_30px_rgba(0,0,0,0.3)] ${
+                className={`w-11 h-11 rounded-2xl border border-border flex items-center justify-center transition-all shadow-lg ${
                   isUrlMode
-                    ? "bg-[var(--glass-bg)] text-foreground/40 cursor-not-allowed opacity-60"
-                    : "bg-[var(--glass-bg)] text-foreground/70 hover:text-foreground cursor-pointer"
+                    ? "bg-card text-foreground/40 cursor-not-allowed opacity-60"
+                    : "bg-card text-foreground/70 hover:text-foreground cursor-pointer"
                 }`}
                 title={isUrlMode ? "URL mode disables attachments" : "Add media"}
                 aria-expanded={showMediaMenu}
@@ -1072,7 +1072,7 @@ export default function DetectionPage() {
                 <Plus className="w-4 h-4" />
               </button>
               {showMediaMenu && (
-                <div className="absolute z-20 top-12 left-0 w-56 rounded-2xl border border-[var(--glass-border)] bg-background/95 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.45)] p-3 space-y-1">
+                <div className="absolute z-20 top-12 left-0 w-56 rounded-2xl border border-border bg-card shadow-lg p-3 space-y-1">
                   <button
                     onClick={handlePhotoMenuSelect}
                     className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-xl hover:bg-foreground/10 transition-colors text-sm text-foreground cursor-pointer"
@@ -1111,8 +1111,8 @@ export default function DetectionPage() {
                 isRecording
                   ? "bg-red-500/80 text-white hover:bg-red-500"
                   : isUrlMode
-                    ? "bg-[var(--glass-bg)] text-foreground/40"
-                    : "bg-[var(--glass-bg)] text-foreground/70 hover:text-foreground"
+                    ? "bg-card text-foreground/40"
+                    : "bg-card text-foreground/70 hover:text-foreground"
               } ${
                 isTranscribing || isUrlMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"
               }`}
@@ -1134,9 +1134,9 @@ export default function DetectionPage() {
             </button>
             <button
               onClick={() => setUseWebSearch((prev) => !prev)}
-              className={`text-xs tracking-wide uppercase rounded-full px-4 py-1.5 transition-all flex items-center gap-2 border border-[var(--glass-border)] cursor-pointer ${
+              className={`text-xs tracking-wide uppercase rounded-full px-4 py-1.5 transition-all flex items-center gap-2 border border-border cursor-pointer ${
                 useWebSearch
-                  ? "bg-foreground/20 backdrop-blur-md text-foreground shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
+                  ? "bg-foreground/20 text-foreground shadow-lg"
                   : "bg-background/40 text-foreground/70"
               }`}
               aria-pressed={useWebSearch}
@@ -1151,7 +1151,7 @@ export default function DetectionPage() {
                   setShowToolsMenu((prev) => !prev);
                 }}
                 disabled={isUrlMode}
-                className={`text-xs tracking-wide uppercase rounded-full px-4 py-1.5 transition-all flex items-center gap-2 border border-[var(--glass-border)] ${
+                className={`text-xs tracking-wide uppercase rounded-full px-4 py-1.5 transition-all flex items-center gap-2 border border-border ${
                   showToolsMenu ? "shadow-[0_10px_30px_rgba(0,0,0,0.35)] bg-foreground/15" : ""
                 } ${
                   isUrlMode
@@ -1164,7 +1164,7 @@ export default function DetectionPage() {
                 Tools
               </button>
               {showToolsMenu && (
-                <div className="absolute top-14 left-0 w-72 rounded-3xl border border-[var(--glass-border)] bg-background/95 backdrop-blur-2xl p-4 space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.55)] animate-in fade-in slide-in-from-top-2">
+                <div className="absolute top-14 left-0 w-72 rounded-3xl border border-border bg-card p-4 space-y-4 shadow-lg animate-in fade-in slide-in-from-top-2">
                   <div className="flex items-center justify-between text-xs text-foreground/60">
                     <span>Force specific analysts</span>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/40">
@@ -1206,10 +1206,10 @@ export default function DetectionPage() {
           <button
             onClick={handleAnalyze}
             disabled={loading || isViewingPastClaim || isRecording || isTranscribing}
-            className={`relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-semibold ml-auto transition-all backdrop-blur-md shadow-[0_20px_80px_rgba(0,0,0,0.35)] disabled:cursor-not-allowed disabled:opacity-60 ${
+            className={`relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-semibold ml-auto transition-all shadow-lg disabled:cursor-not-allowed disabled:opacity-60 ${
               loading || isViewingPastClaim || isRecording || isTranscribing
-                ? "border border-[var(--glass-border)] bg-background/40 text-foreground/60"
-                : "border border-amber-300/50 bg-background/40 text-amber-200 hover:bg-amber-300/15 hover:border-amber-300 hover:text-amber-100 hover:shadow-[0_0_25px_rgba(251,191,36,0.35)] active:scale-[0.97]"
+                ? "border border-border bg-card text-foreground/60"
+                : "border border-primary/50 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary hover:text-primary hover:shadow-[0_0_25px_rgba(10,127,255,0.35)] active:scale-[0.97]"
             }`}
           >
             <Activity className="h-5 w-5" />
@@ -1221,7 +1221,7 @@ export default function DetectionPage() {
             {mediaAttachments.map((item) => (
               <div
                 key={item.id}
-                className="relative border border-[var(--glass-border)] rounded-2xl overflow-hidden w-28 h-28 shadow-[0_15px_40px_rgba(0,0,0,0.35)]"
+                className="relative border border-border rounded-2xl overflow-hidden w-28 h-28 shadow-lg"
               >
                 <Image
                   src={item.dataUrl}
@@ -1286,7 +1286,7 @@ export default function DetectionPage() {
       {verdict && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 backdrop-blur-xl shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_20px_70px_rgba(0,0,0,0.35)]">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-lg">
               <div className="text-sm text-foreground/60 mb-2">
                 Verdict & Confidence
               </div>
@@ -1308,7 +1308,7 @@ export default function DetectionPage() {
               )}
             </div>
 
-            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 backdrop-blur-xl shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_20px_70px_rgba(0,0,0,0.35)]">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="text-sm text-foreground/60">Summary</div>
                 {verdict.summary && (
@@ -1350,7 +1350,7 @@ export default function DetectionPage() {
           </div>
 
           {verdict.true_news && (
-            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 backdrop-blur-xl shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_20px_70px_rgba(0,0,0,0.35)]">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-lg">
               <div className="text-sm text-foreground/60 mb-2">
                 What the evidence actually shows
               </div>
@@ -1359,7 +1359,7 @@ export default function DetectionPage() {
           )}
 
           {!!verdict.sources_used?.length && (
-            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 backdrop-blur-xl shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_20px_70px_rgba(0,0,0,0.35)]">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-lg">
               <div className="text-sm text-foreground/60 mb-4">Sources</div>
               <div className="space-y-3 max-h-72 overflow-auto pr-2">
                 {verdict.sources_used.map((source, idx) => (
@@ -1368,7 +1368,7 @@ export default function DetectionPage() {
                     href={source.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block border border-[var(--glass-border)] rounded-xl px-4 py-3 hover:bg-foreground/5 transition-colors"
+                    className="block border border-border rounded-xl px-4 py-3 hover:bg-foreground/5 transition-colors"
                   >
                     <div className="text-sm font-medium text-foreground">
                       {source.source_name}
@@ -1394,7 +1394,7 @@ export default function DetectionPage() {
                 {agents.map((agent) => (
                   <details
                     key={agent._id}
-                    className="border border-[var(--glass-border)] rounded-xl p-4 bg-background/30"
+                    className="border border-border rounded-xl p-4 bg-card"
                   >
                     <summary className="cursor-pointer text-sm font-semibold text-foreground flex justify-between gap-2">
                       <span>
@@ -1421,7 +1421,7 @@ export default function DetectionPage() {
             className="absolute inset-0 bg-black/60"
             onClick={closeHistoryPanel}
           />
-          <div className="relative h-full ml-auto max-w-lg w-full bg-[var(--glass-bg)] border-l border-[var(--glass-border)] backdrop-blur-2xl shadow-[0_20px_120px_rgba(0,0,0,0.6)] p-6 flex flex-col space-y-4 animate-in slide-in-from-right duration-300">
+          <div className="relative h-full ml-auto max-w-lg w-full bg-card border-l border-border shadow-lg p-6 flex flex-col space-y-4 animate-in slide-in-from-right duration-300">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-foreground">
@@ -1452,7 +1452,7 @@ export default function DetectionPage() {
                 history.map((item) => (
                   <div
                     key={item.claimId}
-                    className="relative border border-[var(--glass-border)] rounded-2xl p-4 bg-background/30 hover:border-white/30 transition-all group"
+                    className="relative border border-border rounded-2xl p-4 bg-card hover:border-white/30 transition-all group"
                   >
                     <button
                       onClick={() => handleViewClaim(item)}
@@ -1486,7 +1486,7 @@ export default function DetectionPage() {
               )}
               <button
                 onClick={handleStartNewClaim}
-                className="w-full mt-4 py-3 rounded-2xl border border-[var(--glass-border)] text-sm font-semibold text-foreground/80 hover:bg-foreground/10 transition-all"
+                className="w-full mt-4 py-3 rounded-2xl border border-border text-sm font-semibold text-foreground/80 hover:bg-foreground/10 transition-all"
               >
                 + New Claim
               </button>
@@ -1495,7 +1495,7 @@ export default function DetectionPage() {
         </div>
       )}
 
-      <div className="fixed bottom-6 right-6 z-40">
+      <div className="fixed bottom-24 right-6 z-40">
         <button
           onClick={handleViewHistory}
           className="text-foreground hover:text-foreground/70 transition-colors p-2"

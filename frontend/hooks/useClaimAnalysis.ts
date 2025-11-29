@@ -2,13 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { API_ENDPOINTS } from "@/lib/config"
+import { claimProcessingService } from "@/lib/claimProcessingService"
 import type { AgentRecord, ClaimVerdict } from "@/types/claims"
 
 const MAX_CLAIM_LENGTH = 1000
-const MAX_POLL_ATTEMPTS = 30
+const MAX_POLL_ATTEMPTS = 75  // 5 minutes at 4s intervals (75 * 4 = 300 seconds = 5 minutes)
 const POLL_INTERVAL_MS = 4000
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const sleep = async (ms: number): Promise<void> => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 export interface MediaItem {
   type: string
@@ -63,38 +66,36 @@ export function useClaimAnalysis(token: string | null) {
   )
 
   const pollForVerdict = useCallback(
-    async (claimId: string) => {
-      for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
-        const data = await fetchWithAuth<ClaimVerdict>(
-          API_ENDPOINTS.CLAIMS.VERDICT(claimId)
+    async (claimId: string): Promise<ClaimVerdict> => {
+      return new Promise((resolve, reject) => {
+        // Use background service for polling
+        claimProcessingService.startPolling(
+          claimId,
+          token || "",
+          {
+            onStageUpdate: async (stage: string | null) => {
+              setProcessingStage(stage)
+            },
+            onComplete: async (verdict: ClaimVerdict) => {
+              setProcessingStage(null)
+              resolve(verdict)
+            },
+            onError: async (error: string) => {
+              setProcessingStage(null)
+              reject(new Error(error))
+            },
+            onAgentsUpdate: async (agents: AgentRecord[]) => {
+              setAgents(agents)
+            },
+          }
         )
-
-        if (data.status === "processing") {
-          setProcessingStage(data.processing_stage ?? "Processing…")
-          await sleep(POLL_INTERVAL_MS)
-          continue
-        }
-
-        if (data.status === "completed") {
-          setProcessingStage(null)
-          return data
-        }
-
-        if (data.status === "failed") {
-          setProcessingStage(data.processing_stage ?? "Failed")
-          throw new Error(data.error?.message || "Analysis failed. Try again.")
-        }
-
-        await sleep(POLL_INTERVAL_MS)
-      }
-
-      throw new Error("Analysis timed out. Please try again later.")
+      })
     },
-    [fetchWithAuth]
+    [token]
   )
 
   const fetchAgents = useCallback(
-    async (claimId: string) => {
+    async (claimId: string): Promise<AgentRecord[]> => {
       const data = await fetchWithAuth<{ agents: AgentRecord[] }>(
         API_ENDPOINTS.CLAIMS.AGENTS(claimId)
       )
@@ -104,7 +105,7 @@ export function useClaimAnalysis(token: string | null) {
   )
 
   const analyzeClaim = useCallback(
-    async ({ claimText, useWebSearch = true, forcedAgents = [], media = [] }: AnalyzeClaimParams) => {
+    async ({ claimText, useWebSearch = true, forcedAgents = [], media = [] }: AnalyzeClaimParams): Promise<void> => {
       if (!claimText.trim() && media.length === 0) {
         setError("No content provided to analyze.")
         return
@@ -134,11 +135,17 @@ export function useClaimAnalysis(token: string | null) {
           }
         )
 
+        // Start background polling
         const finalVerdict = await pollForVerdict(analyzeResp.claimId)
         setVerdict(finalVerdict)
 
-        const agentOutputs = await fetchAgents(analyzeResp.claimId)
-        setAgents(agentOutputs)
+        // Agents are already fetched by the background service, but fetch again to be sure
+        try {
+          const agentOutputs = await fetchAgents(analyzeResp.claimId)
+          setAgents(agentOutputs)
+        } catch (err) {
+          console.error("Failed to fetch agents:", err)
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong.")
         setProcessingStage(null)
@@ -146,10 +153,16 @@ export function useClaimAnalysis(token: string | null) {
         setLoading(false)
       }
     },
-    [fetchWithAuth, fetchAgents, pollForVerdict]
+    [fetchWithAuth, fetchAgents, pollForVerdict, token]
   )
 
-  const reset = useCallback(() => {
+  const reset = useCallback(async (): Promise<void> => {
+    // Stop any active polling
+    const activeClaim = claimProcessingService.getActiveClaim()
+    if (activeClaim) {
+      claimProcessingService.stopPolling(activeClaim.claimId)
+    }
+    
     setVerdict(null)
     setAgents([])
     setProcessingStage(null)
@@ -157,6 +170,36 @@ export function useClaimAnalysis(token: string | null) {
     setElapsedMs(0)
     startTimeRef.current = null
   }, [])
+
+  // Resume polling if there's an active claim when component mounts
+  useEffect(() => {
+    if (!token) return
+
+    const activeClaim = claimProcessingService.getActiveClaim()
+    if (activeClaim && activeClaim.claimId) {
+      // Resume polling
+      claimProcessingService.resumePolling({
+        onStageUpdate: async (stage: string | null) => {
+          setProcessingStage(stage)
+        },
+        onComplete: async (verdict: ClaimVerdict) => {
+          setProcessingStage(null)
+          setVerdict(verdict)
+          setLoading(false)
+        },
+        onError: async (error: string) => {
+          setProcessingStage(null)
+          setError(error)
+          setLoading(false)
+        },
+        onAgentsUpdate: async (agents: AgentRecord[]) => {
+          setAgents(agents)
+        },
+      })
+      setLoading(true)
+      setProcessingStage("Resuming...")
+    }
+  }, [token])
 
   useEffect(() => {
     if (!loading) {

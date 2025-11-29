@@ -198,9 +198,6 @@ export default function TrendsPage() {
     { value: "reddit", label: "Reddit" },
     { value: "telegram", label: "Telegram" },
     { value: "news", label: "News" },
-    { value: "twitter", label: "Twitter", disabled: true },
-    { value: "instagram", label: "Instagram", disabled: true },
-    { value: "youtube", label: "YouTube", disabled: true },
   ];
 
   const sortOptions: { value: SortBy; label: string }[] = [
@@ -239,14 +236,8 @@ export default function TrendsPage() {
           <button
             onClick={handleRefresh}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--glass-border)] text-foreground/70 hover:text-foreground transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
-            style={{
-              background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-              backdropFilter: "blur(10px) saturate(180%)",
-              WebkitBackdropFilter: "blur(10px) saturate(180%)",
-            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card text-foreground/70 hover:text-foreground transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group hover:bg-foreground/5"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
             <RefreshCw className={cn("w-4 h-4 relative z-10", loading && "animate-spin")} />
             <span className="text-sm relative z-10">Refresh</span>
         </button>
@@ -255,29 +246,16 @@ export default function TrendsPage() {
 
       {/* Platform Selector & Filters */}
       <div 
-        className="backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-4 space-y-4 shadow-xl relative transition-all duration-300"
-        style={{
-          background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-        }}
+        className="bg-card border border-border rounded-2xl p-4 space-y-4 shadow-xl relative transition-all duration-300"
       >
-        {/* Simple gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none rounded-2xl" />
         
         <div className="relative z-10 flex items-center gap-4 flex-wrap">
           {/* Platform Dropdown */}
           <DropdownMenuPrimitive.Root>
             <DropdownMenuPrimitive.Trigger asChild>
               <button 
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[var(--glass-border)] text-foreground text-sm font-medium transition-all duration-300 relative overflow-hidden group"
-                style={{
-                  background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-                  backdropFilter: "blur(10px) saturate(180%)",
-                  WebkitBackdropFilter: "blur(10px) saturate(180%)",
-                }}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card text-foreground text-sm font-medium transition-all duration-300 relative overflow-hidden group hover:bg-foreground/5"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                 <span className="relative z-10">{platforms.find((p) => p.value === selectedPlatform)?.label || "Select Platform"}</span>
                 <ChevronDown className="w-4 h-4 text-foreground/50 relative z-10" />
               </button>
@@ -285,15 +263,8 @@ export default function TrendsPage() {
             <DropdownMenuPrimitive.Portal>
               <DropdownMenuPrimitive.Content
                 align="start"
-                className="z-50 min-w-[180px] overflow-hidden rounded-xl border border-[var(--glass-border)] p-1 text-foreground shadow-xl relative"
-                style={{
-                  background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%)",
-                  backdropFilter: "blur(20px) saturate(180%)",
-                  WebkitBackdropFilter: "blur(20px) saturate(180%)",
-                }}
+                className="z-50 min-w-[180px] overflow-hidden rounded-xl border border-border p-1 text-foreground shadow-xl relative bg-background"
               >
-                {/* Simple gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none rounded-xl" />
                 {platforms.map((platform) => (
                   <DropdownMenuPrimitive.Item
                     key={platform.value}
@@ -321,7 +292,7 @@ export default function TrendsPage() {
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
-              "flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[var(--glass-border)] transition-all duration-300 relative overflow-hidden group",
+              "flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card transition-all duration-300 relative overflow-hidden group hover:bg-foreground/5",
               showFilters
                 ? "text-foreground"
                 : "text-foreground/70 hover:text-foreground"
@@ -345,14 +316,8 @@ export default function TrendsPage() {
             <DropdownMenuPrimitive.Root>
               <DropdownMenuPrimitive.Trigger asChild>
                 <button 
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--glass-border)] text-foreground text-xs font-medium transition-all duration-300 relative overflow-hidden group"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-                    backdropFilter: "blur(10px) saturate(180%)",
-                    WebkitBackdropFilter: "blur(10px) saturate(180%)",
-                  }}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-xs font-medium transition-all duration-300 relative overflow-hidden group hover:bg-foreground/5"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
                   <span className="relative z-10">{sortOptions.find((o) => o.value === sortBy)?.label || "Engagement"}</span>
                   <ChevronDown className="w-3 h-3 text-foreground/50 relative z-10" />
                 </button>
@@ -360,15 +325,8 @@ export default function TrendsPage() {
               <DropdownMenuPrimitive.Portal>
               <DropdownMenuPrimitive.Content
                 align="end"
-                className="z-50 min-w-[140px] overflow-hidden rounded-xl border border-[var(--glass-border)] p-1 text-foreground shadow-xl relative"
-                style={{
-                  background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%)",
-                  backdropFilter: "blur(20px) saturate(180%)",
-                  WebkitBackdropFilter: "blur(20px) saturate(180%)",
-                }}
+                className="z-50 min-w-[140px] overflow-hidden rounded-xl border border-border p-1 text-foreground shadow-xl relative bg-background"
               >
-                  {/* Simple gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none rounded-xl" />
                   {sortOptions.map((option) => (
                     <DropdownMenuPrimitive.Item
                       key={option.value}
@@ -389,15 +347,9 @@ export default function TrendsPage() {
             </DropdownMenuPrimitive.Root>
             <button
               onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
-              className="px-2 py-1.5 rounded-lg border border-[var(--glass-border)] text-foreground/70 hover:text-foreground transition-all duration-300 relative overflow-hidden group"
-              style={{
-                background: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)",
-                backdropFilter: "blur(10px) saturate(180%)",
-                WebkitBackdropFilter: "blur(10px) saturate(180%)",
-              }}
+              className="px-2 py-1.5 rounded-lg border border-border bg-card text-foreground/70 hover:text-foreground transition-all duration-300 relative overflow-hidden group hover:bg-foreground/5"
               title={sortOrder === "desc" ? "Descending" : "Ascending"}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
               <span className="relative z-10">{sortOrder === "desc" ? "↓" : "↑"}</span>
             </button>
                 </div>
@@ -405,7 +357,7 @@ export default function TrendsPage() {
 
         {/* Expanded Filters */}
         {showFilters && (
-          <div className="relative z-10 pt-4 border-t border-[var(--glass-border)]">
+          <div className="relative z-10 pt-4 border-t border-border">
             <div className="flex items-center gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/50" />
@@ -414,12 +366,7 @@ export default function TrendsPage() {
                   placeholder="Search by keyword..."
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-[var(--glass-border)] rounded-xl text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300 relative"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-                    backdropFilter: "blur(10px) saturate(180%)",
-                    WebkitBackdropFilter: "blur(10px) saturate(180%)",
-                  }}
+                  className="w-full pl-10 pr-4 py-2.5 border border-border bg-card rounded-xl text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300 relative"
                 />
               </div>
             </div>
@@ -470,15 +417,8 @@ export default function TrendsPage() {
               return (
                 <div
                   key={`${trend.url}-${index}`}
-                  className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-5 hover:border-foreground/30 transition-all duration-300 relative overflow-hidden group shadow-xl"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-                    backdropFilter: "blur(20px) saturate(180%)",
-                    WebkitBackdropFilter: "blur(20px) saturate(180%)",
-                  }}
+                  className="bg-card border border-border rounded-2xl p-5 hover:border-foreground/30 transition-all duration-300 relative overflow-hidden group shadow-xl"
                 >
-                  {/* Simple gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
 
                   <div className="relative z-10">
                     <div className="flex items-start justify-between gap-4">
@@ -556,15 +496,8 @@ export default function TrendsPage() {
                       <div className="flex flex-col items-end gap-2 shrink-0">
                         {(selectedPlatform === "reddit" || selectedPlatform === "telegram") && (
                           <div 
-                            className="text-right backdrop-blur-xl border border-[var(--glass-border)] rounded-xl px-4 py-3 shadow-xl relative transition-all duration-300"
-                            style={{
-                              background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
-                              backdropFilter: "blur(20px) saturate(180%)",
-                              WebkitBackdropFilter: "blur(20px) saturate(180%)",
-                            }}
+                            className="text-right bg-card border border-border rounded-xl px-4 py-3 shadow-xl relative transition-all duration-300"
                           >
-                            {/* Simple gradient overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                             
                             <div className="relative z-10">
                               <div className="text-xs text-foreground/50 mb-1">Engagement</div>
@@ -574,7 +507,7 @@ export default function TrendsPage() {
                             </div>
                           </div>
                         )}
-                        <ArrowUpRight className="w-5 h-5 text-foreground/30 group-hover:text-foreground/60 transition-colors duration-300" />
+                        <ArrowUpRight className="w-5 h-5 text-foreground/30 group-hover:shiny-blue-text transition-colors duration-300" />
                       </div>
                     </div>
                     <div className="mt-4 flex flex-wrap items-center gap-3">

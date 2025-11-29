@@ -85,62 +85,32 @@ export default function GlobePage() {
   }, [token])
 
   return (
-    <div className="space-y-4 h-full flex flex-col">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-foreground">Live Misinformation Map</h1>
+    <div className="h-full flex flex-col">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-foreground">3D Globe</h1>
       </div>
 
-      {/* 3D Globe Component */}
-      <div className="flex-1 w-full border border-border rounded-xl overflow-hidden bg-black">
-        <CesiumGlobe
-          markers={markers}
-          onMarkerAdd={handleMarkerAdd}
-          onMarkerSelect={handleMarkerSelect}
-          heatmapEnabled={false}
-          clusteringEnabled={false}
-          onCoordinateClick={handleCoordinateClick}
-        />
-      </div>
-
-      {/* Loading state - Overlay */}
-      {loadingNews && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-lg p-6 shadow-2xl">
-            <p className="text-sm text-foreground/70">Fetching news for location...</p>
-          </div>
-        </div>
-      )}
-
-      {/* Location News Display - Overlay Modal */}
-      {locationNews && !loadingNews && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          onClick={(e) => {
-            // Close when clicking outside the modal (on backdrop)
-            if (e.target === e.currentTarget) {
-              setLocationNews(null)
-              setClickedCoords(null)
-            }
-          }}
-        >
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={(e) => {
-              e.stopPropagation()
-              setLocationNews(null)
-              setClickedCoords(null)
-            }}
+      {/* Split Layout: Globe on Left (Fixed), News on Right */}
+      <div className="flex-1 flex gap-4 min-h-0">
+        {/* Left Side - 3D Globe Component (Fixed Position) */}
+        <div className="w-[60%] border border-border rounded-xl overflow-hidden bg-black flex-shrink-0">
+          <CesiumGlobe
+            markers={markers}
+            onMarkerAdd={handleMarkerAdd}
+            onMarkerSelect={handleMarkerSelect}
+            heatmapEnabled={false}
+            clusteringEnabled={false}
+            onCoordinateClick={handleCoordinateClick}
           />
-          
-          {/* Modal Content */}
-          <div 
-            className="relative w-full max-w-4xl max-h-[90vh] bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-xl shadow-2xl overflow-hidden flex flex-col z-10"
-            onClick={(e) => e.stopPropagation()}
-          >
+        </div>
+
+        {/* Right Side - News Panel (Reserved Space) */}
+        <div className="w-[40%] flex-shrink-0">
+          {locationNews && !loadingNews && (
+            <div className="h-full bg-card border border-border rounded-xl shadow-lg flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="flex justify-between items-start p-6 border-b border-[var(--glass-border)]">
-              <div>
+            <div className="flex justify-between items-start p-4 border-b border-border">
+              <div className="flex-1">
                 <h3 className="font-semibold text-foreground mb-1 text-lg">
                   📍 News for {[
                     locationNews.location.city,
@@ -159,13 +129,11 @@ export default function GlobePage() {
               </div>
               <button
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
+                onClick={() => {
                   setLocationNews(null)
                   setClickedCoords(null)
                 }}
-                className="text-foreground/50 hover:text-foreground transition-colors text-2xl leading-none p-2 hover:bg-foreground/10 rounded-lg"
+                className="text-foreground/50 hover:text-foreground transition-colors text-xl leading-none p-2 hover:bg-foreground/10 rounded-lg ml-2 flex-shrink-0"
                 aria-label="Close"
               >
                 ✕
@@ -173,7 +141,7 @@ export default function GlobePage() {
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {locationNews.articles.map((article) => {
                 const analyzablePayload: AnalyzableNews = {
                   id: article.article_id || article.link,
@@ -196,27 +164,27 @@ export default function GlobePage() {
                 return (
                   <div
                     key={article.article_id || article.link}
-                    className="p-4 rounded-lg border border-[var(--glass-border)] hover:bg-foreground/5 transition-all group"
+                    className="p-4 rounded-lg border border-border bg-background hover:bg-foreground/5 transition-all group"
                   >
                     <div className="flex gap-3">
                       {article.image_url && (
                         <img
                           src={article.image_url}
                           alt={article.title}
-                          className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                          className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                           onError={(e) => {
                             (e.target as HTMLImageElement).style.display = 'none'
                           }}
                         />
                       )}
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-1">
+                        <h4 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-1 text-sm">
                           {article.title}
                         </h4>
-                        <p className="text-sm text-foreground/70 line-clamp-2 mb-2">
+                        <p className="text-xs text-foreground/70 line-clamp-2 mb-2">
                           {article.description}
                         </p>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-foreground/60">
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-foreground/60">
                           <span className="font-medium">{article.source_name}</span>
                           {article.pub_date && (
                             <span>{new Date(article.pub_date).toLocaleDateString()}</span>
@@ -236,7 +204,7 @@ export default function GlobePage() {
                             </span>
                           )}
                         </div>
-                        <div className="mt-3 flex flex-wrap items-center gap-3">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           <AnalyzeNewsButton news={analyzablePayload} size="sm" />
                           {article.link && (
                             <a
@@ -255,13 +223,24 @@ export default function GlobePage() {
                 )
               })}
             </div>
-          </div>
+            </div>
+          )}
+          
+          {/* Loading state - Show in right panel */}
+          {loadingNews && (
+            <div className="h-full bg-card border border-border rounded-xl shadow-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                <p className="text-sm text-foreground/70">Fetching news for location...</p>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Selected marker info */}
       {selectedMarker && (
-        <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-lg p-4">
+        <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="font-semibold text-foreground mb-1">{selectedMarker.title}</h3>

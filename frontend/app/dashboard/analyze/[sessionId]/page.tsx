@@ -652,7 +652,7 @@ export default function AnalyzeNewsPage() {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         <button
-          className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground transition"
+          className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition rounded-lg px-2 py-1"
           onClick={() => router.push("/dashboard/trends")}
         >
           <ArrowLeft className="h-4 w-4" /> Back to dashboard
@@ -676,7 +676,7 @@ export default function AnalyzeNewsPage() {
     <div className="max-w-6xl mx-auto px-4 space-y-6">
       <div className="flex items-center justify-between">
         <button
-          className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground transition"
+          className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition rounded-lg px-2 py-1"
           onClick={() => router.back()}
         >
           <ArrowLeft className="h-4 w-4" /> Back
@@ -685,7 +685,7 @@ export default function AnalyzeNewsPage() {
           {displayVerdict && (
             <button
               onClick={handleGenerateReport}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all backdrop-blur-sm shadow-lg"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/50 text-primary rounded-lg hover:bg-primary/20 hover:border-primary transition-all shadow-lg"
             >
               <FileText className="h-4 w-4" />
               Generate Report

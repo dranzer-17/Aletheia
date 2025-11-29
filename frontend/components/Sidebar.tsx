@@ -19,14 +19,14 @@ import { cn } from "@/lib/utils";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const menuItems = [
-  { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { name: "AI Chatbot", href: "/dashboard/chatbot", icon: MessageSquare },
-  { name: "Live Trends", href: "/dashboard/trends", icon: TrendingUp },
-  { name: "3D Globe", href: "/dashboard/globe", icon: Globe },
-  { name: "Fake Detection", href: "/dashboard/detection", icon: ShieldAlert },
-  { name: "AI Detection", href: "/dashboard/ai-detection", icon: Scan },
-  { name: "Deepfake Detection", href: "/dashboard/deepfake", icon: Video },
-  { name: "Social Network Graph", href: "/dashboard/social-graph", icon: Share2 },
+  { name: "Overview", href: "/dashboard", icon: LayoutDashboard, shortText: "Home" },
+  { name: "AI Chatbot", href: "/dashboard/chatbot", icon: MessageSquare, shortText: "Chat" },
+  { name: "Live Trends", href: "/dashboard/trends", icon: TrendingUp, shortText: "Trends" },
+  { name: "3D Globe", href: "/dashboard/globe", icon: Globe, shortText: "Globe" },
+  { name: "Fake Detection", href: "/dashboard/detection", icon: ShieldAlert, shortText: "Fake" },
+  { name: "AI Detection", href: "/dashboard/ai-detection", icon: Scan, shortText: "AI Scan" },
+  { name: "Deepfake Detection", href: "/dashboard/deepfake", icon: Video, shortText: "Deepfake" },
+  { name: "Social Network Graph", href: "/dashboard/social-graph", icon: Share2, shortText: "Network" },
 ];
 
 export function Sidebar() {
@@ -66,10 +66,10 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="w-72 h-screen bg-[var(--glass-bg)] backdrop-blur-xl border-r border-[var(--glass-border)] flex flex-col fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out">
+      <aside className="w-72 h-screen bg-card border-r border-border flex flex-col fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out">
         
         {/* LOGO */}
-        <Link href="/" className="h-20 flex items-center px-6 border-b border-[var(--glass-border)]">
+        <Link href="/" className="h-20 flex items-center px-6 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-foreground rounded-lg">
               <ShieldCheck className="w-5 h-5 text-background" />
@@ -82,7 +82,7 @@ export function Sidebar() {
         <nav ref={navRef} className="flex-1 py-6 flex flex-col gap-1.5 px-4 relative">
           {/* Sliding Glass Indicator */}
           <div
-            className="absolute left-4 right-4 rounded-lg bg-foreground/10 backdrop-blur-sm border border-foreground/20 transition-all duration-500 ease-in-out pointer-events-none"
+            className="absolute left-4 right-4 rounded-lg bg-foreground/10 border border-foreground/20 transition-all duration-500 ease-in-out pointer-events-none"
             style={{
               top: `${indicatorStyle.top}px`,
               height: `${indicatorStyle.height}px`,
@@ -97,32 +97,35 @@ export function Sidebar() {
                 href={item.href}
                 ref={(el) => { itemRefs.current[index] = el; }}
                 className={cn(
-                  "group flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium relative z-10",
+                  "group flex items-center gap-3 px-4 py-4 rounded-lg text-sm font-medium relative z-10",
                   "transition-all duration-300 ease-in-out",
                   isActive 
-                    ? "text-foreground" 
+                    ? "text-background bg-foreground" 
                     : "text-foreground/70 hover:text-foreground"
                 )}
               >
                 {/* Hover glass effect */}
                 {!isActive && (
-                  <div className="absolute inset-0 rounded-lg bg-foreground/5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out pointer-events-none" />
+                  <div className="absolute inset-0 rounded-lg bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out pointer-events-none" />
                 )}
                 
                 <item.icon className={cn(
-                  "w-5 h-5 shrink-0 relative z-10 transition-all duration-300 ease-in-out",
+                  "w-6 h-6 shrink-0 relative z-10 transition-all duration-300 ease-in-out",
                   isActive 
-                    ? "text-foreground" 
+                    ? "text-background" 
                     : "text-foreground/50 group-hover:text-foreground"
                 )} />
-                <span className="relative z-10 transition-all duration-300 ease-in-out">{item.name}</span>
+                <div className="flex flex-col relative z-10">
+                  <span className="transition-all duration-300 ease-in-out">{item.name}</span>
+                  <span className="text-xs opacity-70 mt-0.5">{item.shortText}</span>
+                </div>
               </Link>
             );
           })}
         </nav>
 
         {/* LOGOUT */}
-        <div className="p-4 border-t border-[var(--glass-border)]">
+        <div className="p-4 border-t border-border">
           <button 
             onClick={() => setShowLogoutDialog(true)}
             className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-500/10 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98]"
