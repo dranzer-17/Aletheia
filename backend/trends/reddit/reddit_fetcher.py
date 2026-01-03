@@ -49,7 +49,7 @@ class RedditFetcher:
         logger.info(f"Fetching Reddit trends from r/{subreddit_source}")
         
         # Fetch from Reddit API
-        trend_items_data = self.reddit_client.get_trending_posts(
+        trend_items_data = await self.reddit_client.get_trending_posts(
             subreddit_source=subreddit_source,
             limit=limit,
             sort_method=sort_method

@@ -5,6 +5,7 @@ python-dotenv
 httpx
 beautifulsoup4
 google-generativeai
+google-genai
 firecrawl-py
 google-search-results
 questionary
@@ -22,7 +23,7 @@ python-jose[cryptography]
 python-multipart
 email-validator
 Pillow
-praw
+asyncpraw
 apscheduler
 telethon
 geopy

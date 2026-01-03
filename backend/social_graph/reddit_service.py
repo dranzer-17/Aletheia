@@ -5,9 +5,9 @@ from collections import Counter, defaultdict
 from datetime import UTC, datetime, timedelta
 from typing import Dict, List, Sequence, Set, Tuple
 
-import praw
-from praw.models import Comment as PrawComment, Submission
-from prawcore.exceptions import PrawcoreException
+import asyncpraw
+from asyncpraw.models import Comment as PrawComment, Submission
+from asyncprawcore.exceptions import AsyncPrawcoreException as PrawcoreException
 
 from config import REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT
 
@@ -29,7 +29,7 @@ logger = get_logger(__name__)
 if not (REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET and REDDIT_USER_AGENT):
     raise RuntimeError("Reddit API credentials are not configured")
 
-reddit = praw.Reddit(
+reddit = asyncpraw.Reddit(
     client_id=REDDIT_CLIENT_ID,
     client_secret=REDDIT_CLIENT_SECRET,
     user_agent=REDDIT_USER_AGENT,
@@ -53,17 +53,17 @@ def _normalize_author(author: str | None) -> str:
     return value[:80]
 
 
-def _build_permalink(submission: Submission) -> str:
-    return f"https://www.reddit.com{submission.permalink}"
+async def _build_permalink(submission: Submission) -> str:
+    return f"https://www.reddit.com{await submission.permalink}"
 
 
-def _matches_keyword(submission: Submission, normalized_keyword: str) -> bool:
+async def _matches_keyword(submission: Submission, normalized_keyword: str) -> bool:
     title = (submission.title or "").lower()
     body = (submission.selftext or "").lower()
     return normalized_keyword in title or normalized_keyword in body
 
 
-def _collect_posts(
+async def _collect_posts(
     keyword: str, max_posts: int, time_range: str
 ) -> Tuple[List[GraphPost], List[Submission]]:
     submissions: List[Submission] = []
@@ -72,7 +72,8 @@ def _collect_posts(
     target_posts = min(max_posts, MAX_REDDIT_POSTS)
     normalized_keyword = keyword.lower()
 
-    search_iter = reddit.subreddit("all").search(
+    subreddit = await reddit.subreddit("all")
+    search_iter = subreddit.search(
         query=keyword,
         sort="top",
         time_filter=TIME_RANGE_TO_PRAW[time_range],
@@ -80,25 +81,27 @@ def _collect_posts(
     )
 
     attempts = 0
-    for submission in search_iter:
+    async for submission in search_iter:
         attempts += 1
         if attempts > MAX_SEARCH_BATCH:
             break
         if len(posts) >= target_posts:
             break
-        if not _matches_keyword(submission, normalized_keyword):
+        if not await _matches_keyword(submission, normalized_keyword):
             continue
         submissions.append(submission)
+        author = await submission.author
+        subreddit_obj = await submission.subreddit
         posts.append(
             GraphPost(
                 id=submission.id,
                 title=(submission.title or "Untitled post")[:280],
-                author=_normalize_author(getattr(submission.author, "name", None)),
+                author=_normalize_author(getattr(author, "name", None)),
                 score=int(submission.score or 0),
                 num_comments=int(submission.num_comments or 0),
                 created_utc=_to_datetime(submission.created_utc),
-                permalink=_build_permalink(submission),
-                subreddit=submission.subreddit.display_name.lower(),
+                permalink=await _build_permalink(submission),
+                subreddit=subreddit_obj.display_name.lower(),
                 url=submission.url,
             )
         )
@@ -106,7 +109,7 @@ def _collect_posts(
     return posts, submissions
 
 
-def _collect_comments(
+async def _collect_comments(
     submissions: Sequence[Submission], per_post_limit: int
 ) -> List[GraphComment]:
     collected: List[GraphComment] = []
@@ -115,7 +118,7 @@ def _collect_comments(
     for submission in submissions:
         try:
             submission.comment_sort = "top"
-            submission.comments.replace_more(limit=0)
+            await submission.comments.replace_more(limit=0)
         except PrawcoreException as exc:
             logger.warning("Failed to load comments for %s: %s", submission.id, exc)
             continue
@@ -129,11 +132,12 @@ def _collect_comments(
             if per_post_count >= per_post_limit:
                 break
             seen_ids.add(comment.id)
+            author = await comment.author
             collected.append(
                 GraphComment(
                     id=comment.id,
                     body=(comment.body or "").strip()[:500],
-                    author=_normalize_author(getattr(comment.author, "name", None)),
+                    author=_normalize_author(getattr(author, "name", None)),
                     score=int(comment.score or 0),
                     created_utc=_to_datetime(comment.created_utc),
                     post_id=comment.link_id.replace("t3_", ""),
@@ -248,8 +252,8 @@ async def fetch_reddit_graph(payload: RedditGraphRequest) -> SocialGraphResponse
     start_dt = end_dt - timedelta(days=TIME_RANGE_TO_DAYS[time_range])
 
     try:
-        posts, submissions = await asyncio.to_thread(
-            _collect_posts, keyword, payload.max_posts, time_range
+        posts, submissions = await _collect_posts(
+            keyword, payload.max_posts, time_range
         )
     except PrawcoreException as exc:
         logger.error("Reddit API error: %s", exc)
@@ -276,9 +280,7 @@ async def fetch_reddit_graph(payload: RedditGraphRequest) -> SocialGraphResponse
             edges=[],
         )
 
-    comments = await asyncio.to_thread(
-        _collect_comments, submissions, COMMENTS_PER_POST
-    )
+    comments = await _collect_comments(submissions, COMMENTS_PER_POST)
 
     users, allowed_usernames = _build_users(posts, comments, payload.max_users)
     edges = _build_edges(posts, comments, allowed_usernames)

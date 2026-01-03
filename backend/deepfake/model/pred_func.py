@@ -1,4 +1,3 @@
-import torch
 from .genconvit import GenConViT
 
 def load_genconvit(config, net, ed_weight, vae_weight, fp16):

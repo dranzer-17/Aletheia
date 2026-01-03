@@ -30,6 +30,10 @@ export default function LandingPage() {
         if (res.ok) {
           // Token is valid, user is logged in
           setIsLoggedIn(true);
+          // Redirect authenticated visitors to their dashboard
+          if (window.location.pathname !== "/dashboard") {
+            router.push("/dashboard");
+          }
         } else {
           // Token is invalid, remove it
           localStorage.removeItem("token");
@@ -64,23 +68,50 @@ export default function LandingPage() {
         <div className="flex items-center gap-4">
           <ModeToggle />
           
-          {/* For static frontend deploy, hide Login/Signup links; only show Dashboard if already logged in */}
-          {!checking && isLoggedIn && (
-            <Link
-              href="/dashboard"
-              className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] hover:bg-foreground/10 text-foreground px-5 py-2 rounded-lg text-sm font-medium transition-all relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_0_15px_rgba(255,255,255,0.05),inset_0_0_15px_rgba(255,255,255,0.05)]"
-            >
-              <div
-                className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50 pointer-events-none rounded-lg"
-                style={{
-                  maskImage:
-                    "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
-                  WebkitMaskImage:
-                    "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
-                }}
-              />
-              <span className="relative z-10">Dashboard</span>
-            </Link>
+          {!checking && (
+            <>
+              {isLoggedIn ? (
+                <Link
+                  href="/dashboard"
+                  className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] hover:bg-foreground/10 text-foreground px-5 py-2 rounded-lg text-sm font-medium transition-all relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_0_15px_rgba(255,255,255,0.05),inset_0_0_15px_rgba(255,255,255,0.05)]"
+                >
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50 pointer-events-none rounded-lg"
+                    style={{
+                      maskImage:
+                        "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
+                      WebkitMaskImage:
+                        "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
+                    }}
+                  />
+                  <span className="relative z-10">Dashboard</span>
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-[var(--glass-bg)] hover:backdrop-blur-xl hover:border hover:border-[var(--glass-border)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_0_10px_rgba(255,255,255,0.05)]"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] hover:bg-foreground/10 text-foreground px-5 py-2 rounded-lg text-sm font-medium transition-all relative overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_0_15px_rgba(255,255,255,0.05),inset_0_0_15px_rgba(255,255,255,0.05)]"
+                  >
+                    <div
+                      className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50 pointer-events-none rounded-lg"
+                      style={{
+                        maskImage:
+                          "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
+                        WebkitMaskImage:
+                          "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
+                      }}
+                    />
+                    <span className="relative z-10">Get API Key</span>
+                  </Link>
+                </>
+              )}
+            </>
           )}
         </div>
       </nav>
@@ -126,8 +157,10 @@ export default function LandingPage() {
             <span className="relative z-10">Try Claim Verification</span>
           </button>
 
-          {/* Shiny Blue CTA Button - no auth link for static deploy */}
-          <button className="shiny-blue-bg text-white px-8 py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all cursor-pointer relative overflow-hidden">
+          <Link
+            href="/auth/signup"
+            className="shiny-blue-bg text-white px-8 py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all cursor-pointer relative overflow-hidden"
+          >
             <div
               className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-50 pointer-events-none rounded-lg"
               style={{
@@ -141,7 +174,7 @@ export default function LandingPage() {
             <span className="relative z-10 drop-shadow-[0_0_4px_rgba(255,255,255,0.6)]">
               Get Started Free
             </span>
-          </button>
+          </Link>
         </div>
 
         {/* Background Glow - Shiny Blue */}

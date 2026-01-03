@@ -1,9 +1,9 @@
 """
-Reddit API Client using PRAW.
+Reddit API Client using Async PRAW.
 Handles authentication and fetching trending posts.
 """
 
-import praw
+import asyncpraw
 from typing import List, Dict, Any
 from datetime import datetime, timezone
 
@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 
 class RedditClient:
-    """Wrapper around PRAW Reddit API client."""
+    """Wrapper around Async PRAW Reddit API client."""
     
     def __init__(self, client_id: str, client_secret: str, user_agent: str):
         """
@@ -24,14 +24,14 @@ class RedditClient:
             client_secret: Reddit API client secret
             user_agent: User agent string (required by Reddit API)
         """
-        self.reddit = praw.Reddit(
+        self.reddit = asyncpraw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
             user_agent=user_agent
         )
         logger.info("Reddit client initialized")
     
-    def get_trending_posts(
+    async def get_trending_posts(
         self,
         subreddit_source: str = "all",
         limit: int = 30,
@@ -49,7 +49,7 @@ class RedditClient:
             List of post dictionaries with metadata
         """
         try:
-            subreddit = self.reddit.subreddit(subreddit_source)
+            subreddit = await self.reddit.subreddit(subreddit_source)
             
             # Get posts based on sort method
             if sort_method == "hot":
@@ -67,7 +67,7 @@ class RedditClient:
                 posts = subreddit.hot(limit=limit)
             
             trend_items = []
-            for post in posts:
+            async for post in posts:
                 try:
                     # Calculate engagement score
                     engagement_score = float(post.score * post.num_comments) if post.num_comments > 0 else float(post.score)
@@ -97,4 +97,7 @@ class RedditClient:
         except Exception as e:
             logger.error(f"Error fetching Reddit trends: {e}", exc_info=True)
             raise
+        finally:
+            # Close the Reddit client session
+            await self.reddit.close()
 

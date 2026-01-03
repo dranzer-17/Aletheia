@@ -31,7 +31,9 @@ GNEWS_API_BASE_URL = os.getenv("GNEWS_API_BASE_URL", "https://gnews.io/api/v4/")
 # Telegram API Vars
 TELEGRAM_API_ID = os.getenv("TELEGRAM_API_ID")
 TELEGRAM_API_HASH = os.getenv("TELEGRAM_API_HASH")
-TELEGRAM_SESSION_PATH = os.getenv("TELEGRAM_SESSION_PATH", os.path.join(os.getcwd(), "telegram.session"))
+# Use absolute path from the backend directory for telegram session
+_BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+TELEGRAM_SESSION_PATH = os.getenv("TELEGRAM_SESSION_PATH", os.path.join(_BACKEND_DIR, "telegram.session"))
 TELEGRAM_CHANNELS = os.getenv("TELEGRAM_CHANNELS")
 
 

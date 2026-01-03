@@ -6,6 +6,11 @@ import pprint
 import json
 import re
 from io import BytesIO
+import warnings
+
+# Suppress google.generativeai deprecation warning until migration to google.genai
+warnings.filterwarnings('ignore', category=FutureWarning, module='google.generativeai')
+
 import google.generativeai as genai
 import questionary
 
