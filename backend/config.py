@@ -30,7 +30,23 @@ TELEGRAM_API_ID = os.getenv("TELEGRAM_API_ID")
 TELEGRAM_API_HASH = os.getenv("TELEGRAM_API_HASH")
 # Use absolute path from the backend directory for telegram session
 _BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
-TELEGRAM_SESSION_PATH = os.getenv("TELEGRAM_SESSION_PATH", os.path.join(_BACKEND_DIR, "telegram.session"))
+# Check Render secret files path first, then local path
+_RENDER_SECRET_B64_PATH = "/etc/secrets/telegram.session.b64"
+_RENDER_SECRET_PATH = "/etc/secrets/telegram.session"
+
+if os.path.exists(_RENDER_SECRET_B64_PATH):
+    # Decode base64 file from Render and save temporarily
+    import base64
+    with open(_RENDER_SECRET_B64_PATH, 'r') as f:
+        session_data = base64.b64decode(f.read())
+    _temp_session = os.path.join(_BACKEND_DIR, ".telegram.session.tmp")
+    with open(_temp_session, 'wb') as f:
+        f.write(session_data)
+    TELEGRAM_SESSION_PATH = _temp_session
+elif os.path.exists(_RENDER_SECRET_PATH):
+    TELEGRAM_SESSION_PATH = _RENDER_SECRET_PATH
+else:
+    TELEGRAM_SESSION_PATH = os.getenv("TELEGRAM_SESSION_PATH", os.path.join(_BACKEND_DIR, "telegram.session"))
 TELEGRAM_CHANNELS = os.getenv("TELEGRAM_CHANNELS")
 
 

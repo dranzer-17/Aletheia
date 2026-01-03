@@ -27,6 +27,9 @@ Thumbs.db
 *.sqlite3
 *.db
 
-# Deepfake model weights (3GB - too large for git)
-deepfake/weights/
-*.pth
+# Telegram session files
+*.session
+.telegram.session.tmp
+
+# Deployment documentation with credentials
+DEPLOYMENT.md
