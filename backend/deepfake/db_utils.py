@@ -1,14 +1,15 @@
 # This file will handle MongoDB integration for deepfake results.
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Dict, Any
+from config import MONGO_URI, MONGO_DB
 
-client = MongoClient("mongodb://localhost:27017/")  # Update with your MongoDB URI
+# Use shared database connection
+from database import db
 
-db = client["mumbai_hacks"]
 collection = db["deepfake_results"]
 
-def save_result(result: Dict[str, Any]):
-    collection.insert_one(result)
+async def save_result(result: Dict[str, Any]):
+    await collection.insert_one(result)
 
-def get_results():
-    return list(collection.find())
+async def get_results():
+    return await collection.find().to_list(length=None)

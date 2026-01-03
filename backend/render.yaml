@@ -1,0 +1,25 @@
+# Render Deployment Configuration
+# See: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: mumbai-hacks-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.0
+      - key: MONGO_URI
+        sync: false  # Set manually in Render dashboard
+      - key: MONGO_DB
+        value: hackathon_db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 43200
+      - key: ALLOWED_ORIGINS
+        value: http://localhost:3000,https://your-frontend-domain.vercel.app
+    healthCheckPath: /

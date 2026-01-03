@@ -4,11 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database Vars
-MONGO_USER = os.getenv("MONGO_USER")
-MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
-MONGO_HOST = os.getenv("MONGO_HOST")
-MONGO_PORT = os.getenv("MONGO_PORT")
-MONGO_DB = os.getenv("MONGO_DB")
+MONGO_URI = os.getenv("MONGO_URI")
+MONGO_DB = os.getenv("MONGO_DB", "hackathon_db")
 
 # Security Vars
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -38,8 +35,5 @@ TELEGRAM_CHANNELS = os.getenv("TELEGRAM_CHANNELS")
 
 
 # Validation
-if not MONGO_USER or not SECRET_KEY or not MONGO_PORT:
-    raise ValueError("❌ ERROR: Missing values in .env file (Check MONGO_USER, PORT, or SECRET_KEY)")
-
-# Construct URI
-MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}"
+if not MONGO_URI or not SECRET_KEY:
+    raise ValueError("❌ ERROR: Missing values in .env file (Check MONGO_URI or SECRET_KEY)")

@@ -8,8 +8,9 @@ env/
 venv/
 .venv/
 *.env
-.vscode/
 .env
+!.env.example
+.vscode/
 # Jupyter Notebook
 .ipynb_checkpoints
 
