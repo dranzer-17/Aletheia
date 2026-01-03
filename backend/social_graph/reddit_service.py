@@ -29,11 +29,14 @@ logger = get_logger(__name__)
 if not (REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET and REDDIT_USER_AGENT):
     raise RuntimeError("Reddit API credentials are not configured")
 
-reddit = asyncpraw.Reddit(
-    client_id=REDDIT_CLIENT_ID,
-    client_secret=REDDIT_CLIENT_SECRET,
-    user_agent=REDDIT_USER_AGENT,
-)
+# Create reddit client per request instead of global
+def get_reddit_client():
+    """Create a new Reddit client instance"""
+    return asyncpraw.Reddit(
+        client_id=REDDIT_CLIENT_ID,
+        client_secret=REDDIT_CLIENT_SECRET,
+        user_agent=REDDIT_USER_AGENT,
+    )
 
 TIME_RANGE_TO_DAYS = {"day": 1, "month": 30, "year": 365}
 TIME_RANGE_TO_PRAW = {"day": "day", "month": "month", "year": "year"}
@@ -72,39 +75,43 @@ async def _collect_posts(
     target_posts = min(max_posts, MAX_REDDIT_POSTS)
     normalized_keyword = keyword.lower()
 
-    subreddit = await reddit.subreddit("all")
-    search_iter = subreddit.search(
-        query=keyword,
-        sort="top",
-        time_filter=TIME_RANGE_TO_PRAW[time_range],
-        limit=target_posts * 6,
-    )
-
-    attempts = 0
-    async for submission in search_iter:
-        attempts += 1
-        if attempts > MAX_SEARCH_BATCH:
-            break
-        if len(posts) >= target_posts:
-            break
-        if not await _matches_keyword(submission, normalized_keyword):
-            continue
-        submissions.append(submission)
-        author = await submission.author
-        subreddit_obj = await submission.subreddit
-        posts.append(
-            GraphPost(
-                id=submission.id,
-                title=(submission.title or "Untitled post")[:280],
-                author=_normalize_author(getattr(author, "name", None)),
-                score=int(submission.score or 0),
-                num_comments=int(submission.num_comments or 0),
-                created_utc=_to_datetime(submission.created_utc),
-                permalink=await _build_permalink(submission),
-                subreddit=subreddit_obj.display_name.lower(),
-                url=submission.url,
-            )
+    reddit = get_reddit_client()
+    try:
+        subreddit = await reddit.subreddit("all")
+        search_iter = subreddit.search(
+            query=keyword,
+            sort="top",
+            time_filter=TIME_RANGE_TO_PRAW[time_range],
+            limit=target_posts * 6,
         )
+
+        attempts = 0
+        async for submission in search_iter:
+            attempts += 1
+            if attempts > MAX_SEARCH_BATCH:
+                break
+            if len(posts) >= target_posts:
+                break
+            if not await _matches_keyword(submission, normalized_keyword):
+                continue
+            submissions.append(submission)
+            author = await submission.author
+            subreddit_obj = await submission.subreddit
+            posts.append(
+                GraphPost(
+                    id=submission.id,
+                    title=(submission.title or "Untitled post")[:280],
+                    author=_normalize_author(getattr(author, "name", None)),
+                    score=int(submission.score or 0),
+                    num_comments=int(submission.num_comments or 0),
+                    created_utc=_to_datetime(submission.created_utc),
+                    permalink=await _build_permalink(submission),
+                    subreddit=subreddit_obj.display_name.lower(),
+                    url=submission.url,
+                )
+            )
+    finally:
+        await reddit.close()
 
     return posts, submissions
 

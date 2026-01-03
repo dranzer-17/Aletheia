@@ -94,6 +94,35 @@ export default function DeepfakeDetection() {
           Upload a video or image and let our AI pipeline analyze it for deepfake artifacts.
         </p>
       </div>
+
+      {/* Unavailability Notice */}
+      <div className="mb-6 bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6">
+        <div className="flex items-start gap-4">
+          <div className="shrink-0">
+            <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-yellow-500 mb-2">Deepfake Detection Currently Unavailable</h3>
+            <p className="text-foreground/70 mb-3">
+              Our deepfake detection model is temporarily disabled due to deployment resource constraints. 
+              The full model requires significant computational resources not available on the free tier.
+            </p>
+            <a
+              href="https://youtu.be/XvCc9IJPGUY?si=2hMNnZhqxoiNfcNg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 font-medium transition-colors"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              Watch Demo on YouTube
+            </a>
+          </div>
+        </div>
+      </div>
       
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -235,8 +264,8 @@ export default function DeepfakeDetection() {
                   <div
                     className={`h-full rounded-full transition-all duration-1000 ${
                       result.prediction === 'REAL' 
-                        ? 'bg-gradient-to-r from-green-500 to-green-400' 
-                        : 'bg-gradient-to-r from-red-500 to-red-400'
+                        ? 'bg-linear-to-r from-green-500 to-green-400' 
+                        : 'bg-linear-to-r from-red-500 to-red-400'
                     }`}
                     style={{ width: `${result.confidence * 100}%` }}
                   />
