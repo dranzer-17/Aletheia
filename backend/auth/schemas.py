@@ -26,3 +26,10 @@ class UserResponse(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+# Schema for Google OAuth callback
+class GoogleAuthCallback(BaseModel):
+    email: EmailStr
+    full_name: str | None = None
+    provider: str = "google"
+    provider_user_id: str

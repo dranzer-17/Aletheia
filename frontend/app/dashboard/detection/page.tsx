@@ -1495,15 +1495,14 @@ export default function DetectionPage() {
         </div>
       )}
 
-      <div className="fixed bottom-24 right-6 z-40">
-        <button
-          onClick={handleViewHistory}
-          className="text-foreground hover:text-foreground/70 transition-colors p-2"
-          aria-label="View past claims"
-        >
-          <FolderOpen className="w-8 h-8" />
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleViewHistory}
+        className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-3xl border border-border bg-card text-foreground shadow-lg transition hover:bg-foreground/10"
+        aria-label="View past claims"
+      >
+        <FolderOpen className="h-5 w-5" />
+      </button>
 
       <ConfirmDialog
         open={deleteDialogOpen}

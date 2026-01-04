@@ -84,6 +84,10 @@ export default function DashboardHome() {
   const [misinformationLoading, setMisinformationLoading] = useState(true);
   const [trendingTopics, setTrendingTopics] = useState<Array<{topic: string; count: number; frequency: number}>>([]);
   const [topicsLoading, setTopicsLoading] = useState(true);
+  const [claimsOverTime, setClaimsOverTime] = useState<any[]>([]);
+  const [claimsOverTimeLoading, setClaimsOverTimeLoading] = useState(true);
+  const [categoryData, setCategoryData] = useState<Array<{category: string; value: number}>>([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
   const router = useRouter();
 
   // Fetch user
@@ -197,10 +201,62 @@ export default function DashboardHome() {
       }
     };
 
+    const fetchClaimsOverTime = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch(`${API_ENDPOINTS.CLAIMS.BASE}/analytics/claims-over-time`, {
+          headers: { 
+            "Authorization": `Bearer ${token}` 
+          },
+        });
+        
+        if (res.ok) {
+          const data = await res.json() as { data: any[] };
+          console.log("Claims over time API response:", data);
+          setClaimsOverTime(data.data || []);
+        } else {
+          console.error("Failed to fetch claims over time:", res.status);
+        }
+      } catch (error) {
+        console.error("Failed to fetch claims over time:", error);
+      } finally {
+        setClaimsOverTimeLoading(false);
+      }
+    };
+
+    const fetchCategoryBreakdown = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch(`${API_ENDPOINTS.CLAIMS.BASE}/analytics/category-breakdown`, {
+          headers: { 
+            "Authorization": `Bearer ${token}` 
+          },
+        });
+        
+        if (res.ok) {
+          const data = await res.json() as { data: Array<{category: string; value: number}> };
+          console.log("Category breakdown API response:", data);
+          setCategoryData(data.data || []);
+        } else {
+          console.error("Failed to fetch category breakdown:", res.status);
+        }
+      } catch (error) {
+        console.error("Failed to fetch category breakdown:", error);
+      } finally {
+        setCategoryLoading(false);
+      }
+    };
+
     if (!loading) {
       fetchStats();
       fetchTopMisinformation();
       fetchTrendingTopics();
+      fetchClaimsOverTime();
+      fetchCategoryBreakdown();
     }
   }, [loading]);
 
@@ -226,31 +282,36 @@ export default function DashboardHome() {
     { id: "Mixed", label: "Mixed/Unverified", value: 12, color: "#eab308" }, // Yellow
   ];
 
-  // Time series data - static upward trend with natural variation
-  const timeSeriesData = [
+  // Time series data - from real database or fallback to mock data
+  const timeSeriesData = claimsOverTimeLoading ? [
     {
       id: "Claims",
       color: shinyBlue,
       data: [
-        { x: "Mon", y: 8 },
-        { x: "Tue", y: 12 },
-        { x: "Wed", y: 10 },
-        { x: "Thu", y: 18 },
-        { x: "Fri", y: 22 },
-        { x: "Sat", y: 15 },
-        { x: "Sun", y: 20 },
+        { x: "Mon", y: 0 },
+        { x: "Tue", y: 0 },
+        { x: "Wed", y: 0 },
+        { x: "Thu", y: 0 },
+        { x: "Fri", y: 0 },
+        { x: "Sat", y: 0 },
+        { x: "Sun", y: 0 },
       ],
     },
-  ];
-
-  // Mock category data - using shiny blue for all
-  const categoryData = [
-    { category: "Politics", value: 28 },
-    { category: "Health", value: 19 },
-    { category: "Finance", value: 15 },
-    { category: "Technology", value: 12 },
-    { category: "Entertainment", value: 8 },
-  ];
+  ] : (claimsOverTime.length > 0 ? claimsOverTime : [
+    {
+      id: "Claims",
+      color: shinyBlue,
+      data: [
+        { x: "Mon", y: 0 },
+        { x: "Tue", y: 0 },
+        { x: "Wed", y: 0 },
+        { x: "Thu", y: 0 },
+        { x: "Fri", y: 0 },
+        { x: "Sat", y: 0 },
+        { x: "Sun", y: 0 },
+      ],
+    },
+  ]);
 
   return (
     <div className="space-y-8">
@@ -467,8 +528,8 @@ export default function DashboardHome() {
               xScale={{ type: "point" }}
               yScale={{
                 type: "linear",
-                min: "auto",
-                max: "auto",
+                min: 0,
+                max: 5,
                 stacked: false,
                 reverse: false,
               }}
@@ -490,6 +551,8 @@ export default function DashboardHome() {
                 legend: "Claims",
                 legendOffset: -40,
                 legendPosition: "middle",
+                tickValues: [0, 1, 2, 3, 4, 5],
+                format: (v) => Number.isInteger(v) ? v : '',
               }}
               enableArea={true}
               areaOpacity={0.5}
@@ -558,7 +621,7 @@ export default function DashboardHome() {
               indexBy="category"
               margin={{ top: 20, right: 30, bottom: 50, left: 60 }}
               padding={0.3}
-              valueScale={{ type: "linear" }}
+              valueScale={{ type: "linear", min: 0, max: 5 }}
               indexScale={{ type: "band", round: true }}
               colors={[shinyBlue]}
               borderColor={shinyBlue}
@@ -581,6 +644,8 @@ export default function DashboardHome() {
                 legend: "Claims",
                 legendPosition: "middle",
                 legendOffset: -50,
+                tickValues: [0, 1, 2, 3, 4, 5],
+                format: (v) => Number.isInteger(v) ? v : '',
               }}
               labelSkipWidth={12}
               labelSkipHeight={12}

@@ -13,6 +13,12 @@ if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 from logger import get_logger
 
+# Import rate limiter
+UTILS_ROOT = Path(__file__).resolve().parents[2] / "utils"
+if str(UTILS_ROOT) not in sys.path:
+    sys.path.insert(0, str(UTILS_ROOT))
+from rate_limiter import gemini_rate_limiter, with_rate_limit_retry
+
 
 def _load_app_config():
     config_path = Path(__file__).resolve().parents[2] / "config.py"
@@ -80,19 +86,11 @@ def normalize_to_percentages(scores: Dict[str, float]) -> Dict[str, float]:
     return percentages
 
 
-async def analyze_sentiment_llm(claim_text: str, llm_client: Any) -> Dict[str, Any]:
+async def _call_llm_for_sentiment(claim_text: str, llm_client: Any) -> Any:
     """
-    Analyze sentiment using LLM.
-    
-    Args:
-        claim_text: The claim text to analyze
-        llm_client: LLM client instance
-    
-    Returns:
-        Dictionary with sentiment analysis results
+    Internal function to call LLM for sentiment analysis.
+    Separated for rate limiting and retry logic.
     """
-    logger.info("Analyzing sentiment using LLM...")
-    
     prompt = f"""
 You are an expert sentiment analyzer. Analyze the sentiment of the following text and provide a detailed sentiment breakdown.
 
@@ -113,9 +111,30 @@ You are an expert sentiment analyzer. Analyze the sentiment of the following tex
 
 The scores must be between 0.0 and 1.0, and should reflect the relative presence of each sentiment in the text.
 """
+    return await llm_client.model.generate_content_async(prompt)
+
+
+async def analyze_sentiment_llm(claim_text: str, llm_client: Any) -> Dict[str, Any]:
+    """
+    Analyze sentiment using LLM with rate limiting and retry logic.
+    
+    Args:
+        claim_text: The claim text to analyze
+        llm_client: LLM client instance
+    
+    Returns:
+        Dictionary with sentiment analysis results
+    """
+    logger.info("Analyzing sentiment using LLM...")
     
     try:
-        response = await llm_client.model.generate_content_async(prompt)
+        # Call LLM with rate limiting and retry
+        response = await with_rate_limit_retry(
+            gemini_rate_limiter,
+            _call_llm_for_sentiment,
+            claim_text,
+            llm_client
+        )
         json_string = extract_json_from_text(response.text)
         
         if not json_string:

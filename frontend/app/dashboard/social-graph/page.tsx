@@ -375,16 +375,17 @@ export default function SocialGraphPage() {
         </div>
       </div>
       </div>
+
       <button
         type="button"
         onClick={handleToggleHistory}
-        className="fixed bottom-20 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-3xl border border-border bg-card text-foreground shadow-lg transition hover:bg-foreground/10"
+        className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-3xl border border-border bg-card text-foreground shadow-lg transition hover:bg-foreground/10"
       >
         <History className="h-5 w-5" />
       </button>
 
       {historyOpen && (
-        <div className="fixed bottom-40 right-6 z-40 flex h-[60vh] w-80 flex-col rounded-3xl border border-border bg-card p-5 text-sm text-foreground shadow-lg">
+        <div className="fixed bottom-24 right-6 z-40 flex h-[60vh] w-80 flex-col rounded-3xl border border-border bg-card p-5 text-sm text-foreground shadow-lg">
           <div className="flex items-center justify-between">
             <p className="text-xs uppercase tracking-[0.3em] text-foreground/60">Past graphs</p>
             <button

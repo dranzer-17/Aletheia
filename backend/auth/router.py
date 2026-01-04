@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 
 from database import db, get_next_sequence
-from auth.schemas import UserCreate, Token, UserResponse
+from auth.schemas import UserCreate, Token, UserResponse, GoogleAuthCallback
 from auth.security import get_password_hash, verify_password, create_access_token
 from config import SECRET_KEY, ALGORITHM
 from logger import get_logger
@@ -93,3 +93,49 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 @router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: dict = Depends(get_current_user)):
     return current_user
+
+@router.post("/google/callback", response_model=Token)
+async def google_auth_callback(auth_data: GoogleAuthCallback):
+    """
+    Handle Google OAuth callback - create or update user and return JWT token
+    """
+    logger.info(f"Google OAuth callback for email: {auth_data.email}")
+    
+    # Check if user already exists
+    user = await db["users"].find_one({"email": auth_data.email})
+    
+    if user:
+        # User exists - check if they have a password (traditional signup)
+        # If they have a password, they signed up traditionally
+        # We'll still allow Google OAuth login
+        logger.info(f"Existing user logging in via Google: {auth_data.email}")
+        
+        # Update provider info if not already set
+        if "provider" not in user or user.get("provider") != "google":
+            await db["users"].update_one(
+                {"email": auth_data.email},
+                {
+                    "$set": {
+                        "provider": auth_data.provider,
+                        "provider_user_id": auth_data.provider_user_id,
+                    }
+                }
+            )
+    else:
+        # New user - create account
+        logger.info(f"Creating new user via Google OAuth: {auth_data.email}")
+        user_dict = {
+            "email": auth_data.email,
+            "full_name": auth_data.full_name or auth_data.email.split('@')[0],
+            "provider": auth_data.provider,
+            "provider_user_id": auth_data.provider_user_id,
+            "user_id": await get_next_sequence("users"),
+            # No hashed_password for OAuth users
+        }
+        
+        await db["users"].insert_one(user_dict)
+        logger.info(f"User successfully created via Google OAuth: {auth_data.email} (user_id: {user_dict['user_id']})")
+    
+    # Generate JWT token
+    access_token = create_access_token(data={"sub": auth_data.email})
+    return {"access_token": access_token, "token_type": "bearer"}

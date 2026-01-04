@@ -22,6 +22,12 @@ BACKEND_ROOT = Path(__file__).resolve().parent.parent
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
+# Import rate limiter
+UTILS_ROOT = Path(__file__).resolve().parent / "utils"
+if str(UTILS_ROOT) not in sys.path:
+    sys.path.insert(0, str(UTILS_ROOT))
+from rate_limiter import gemini_rate_limiter, with_rate_limit_retry
+
 
 def _load_app_config():
     config_path = Path(__file__).resolve().parent / "config.py"
@@ -53,11 +59,67 @@ def extract_json_from_text(text: str) -> Optional[str]:
 
 class LLMClient:
     def __init__(self, api_key: str, model_name: str):
+        fallback_str = APP_CONFIG.get("LLM_FALLBACK_MODELS", "gemini-3-flash,gemini-2.5-flash,gemini-1.5-flash-8b,gemini-2.0-flash-exp,gemini-1.5-flash")
+        self.FALLBACK_MODELS = [m.strip() for m in fallback_str.split(",")]
         self.api_key = api_key
+        self.primary_model_name = model_name
         self.model_name = model_name
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel(self.model_name)
-        logger.info(f"Real LLMClient initialized with model: {self.model_name}.")
+        logger.info(f"Real LLMClient initialized with primary model: {self.model_name}.")
+        logger.info(f"Fallback models configured: {', '.join(self.FALLBACK_MODELS)}")
+
+    async def _call_llm_with_fallback(self, prompt: str) -> Any:
+        """Try primary model, then fallback models if rate limited."""
+        # Build list of models to try: primary first, then fallbacks (excluding primary)
+        models_to_try = [self.primary_model_name] + [
+            m for m in self.FALLBACK_MODELS if m != self.primary_model_name
+        ]
+        
+        last_error = None
+        for i, model_name in enumerate(models_to_try):
+            try:
+                # Switch to current model
+                if self.model_name != model_name:
+                    logger.info(f"Switching to fallback model: {model_name}")
+                    self.model_name = model_name
+                    self.model = genai.GenerativeModel(model_name)
+                
+                # Try the call with rate limiting
+                return await with_rate_limit_retry(
+                    gemini_rate_limiter,
+                    self.model.generate_content_async,
+                    prompt
+                )
+            except Exception as e:
+                error_str = str(e)
+                last_error = e
+                
+                # Check if it's a quota/rate limit error
+                is_quota_error = (
+                    "429" in error_str or
+                    "quota" in error_str.lower() or
+                    "rate limit" in error_str.lower()
+                )
+                
+                if is_quota_error and i < len(models_to_try) - 1:
+                    logger.warning(
+                        f"Model {model_name} hit quota limit. "
+                        f"Trying next model ({i+1}/{len(models_to_try)-1} fallbacks tried)"
+                    )
+                    continue
+                else:
+                    # Not a quota error or last model - raise it
+                    logger.error(f"Model {model_name} failed: {error_str[:200]}")
+                    raise
+        
+        # If we get here, all models failed
+        logger.error(f"All {len(models_to_try)} models exhausted")
+        raise last_error
+
+    async def _call_llm(self, prompt: str) -> Any:
+        """Internal method to call LLM with rate limiting and model fallback."""
+        return await self._call_llm_with_fallback(prompt)
 
     async def extract_ticker_symbol(self, claim_text: str) -> Optional[str]:
         logger.debug(f"LLM extracting ticker for: '{claim_text}'")
@@ -89,7 +151,7 @@ class LLMClient:
         For cryptocurrencies, use format like BTC-USD, ETH-USD.
         """
         try:
-            response = await self.model.generate_content_async(prompt)
+            response = await self._call_llm(prompt)
             ticker = response.text.strip().replace('"', '').replace("'", "")
             if ticker.upper() == "NULL" or not ticker:
                 return None
@@ -121,7 +183,7 @@ class LLMClient:
         }}
         """
         try:
-            response = await self.model.generate_content_async(prompt)
+            response = await self._call_llm(prompt)
             json_string = extract_json_from_text(response.text)
             if not json_string: raise ValueError("No JSON found in Classifier LLM response.")
             return json.loads(json_string)
@@ -152,7 +214,7 @@ class LLMClient:
         IMPORTANT: Do NOT include verbs or common words in keywords. Only include proper nouns and important nouns.
         """
         try:
-            response = await self.model.generate_content_async(prompt)
+            response = await self._call_llm(prompt)
             json_string = extract_json_from_text(response.text)
             if json_string:
                 return json.loads(json_string)
@@ -247,7 +309,7 @@ class LLMClient:
 
     async def summarize_long_form(self, prompt: str) -> Optional[Dict[str, Any]]:
         try:
-            response = await self.model.generate_content_async(prompt)
+            response = await self._call_llm(prompt)
             json_string = extract_json_from_text(response.text)
             if json_string:
                 return json.loads(json_string)
@@ -282,7 +344,7 @@ class LLMClient:
         }}
         """
         try:
-            response = await self.model.generate_content_async(prompt)
+            response = await self._call_llm(prompt)
             json_string = extract_json_from_text(response.text)
             if not json_string: raise ValueError("No JSON found in Mother LLM response.")
             json_response = json.loads(json_string)
@@ -296,16 +358,54 @@ class LLMClient:
     ) -> str:
         """
         Send an image + textual prompt to the multimodal LLM (Gemini) and return the raw text response.
+        Uses model fallback for rate limit resilience.
         """
-        try:
-            from PIL import Image
-
-            image = Image.open(BytesIO(image_bytes))
-            response = await self.model.generate_content_async([prompt, image])
-            return response.text
-        except Exception as exc:
-            logger.error("LLM image analysis failed.", exc_info=True)
-            raise exc
+        from PIL import Image
+        image = Image.open(BytesIO(image_bytes))
+        
+        # Try with fallback models
+        models_to_try = [self.primary_model_name] + [
+            m for m in self.FALLBACK_MODELS if m != self.primary_model_name
+        ]
+        
+        last_error = None
+        for i, model_name in enumerate(models_to_try):
+            try:
+                # Switch to current model if needed
+                if self.model_name != model_name:
+                    logger.info(f"Switching to fallback model for image analysis: {model_name}")
+                    self.model_name = model_name
+                    self.model = genai.GenerativeModel(model_name)
+                
+                # Call with rate limiting
+                async def _call_image_llm():
+                    return await self.model.generate_content_async([prompt, image])
+                
+                response = await with_rate_limit_retry(
+                    gemini_rate_limiter,
+                    _call_image_llm
+                )
+                return response.text
+                
+            except Exception as e:
+                error_str = str(e)
+                last_error = e
+                
+                is_quota_error = (
+                    "429" in error_str or
+                    "quota" in error_str.lower() or
+                    "rate limit" in error_str.lower()
+                )
+                
+                if is_quota_error and i < len(models_to_try) - 1:
+                    logger.warning(f"Image analysis with {model_name} hit quota. Trying next model.")
+                    continue
+                else:
+                    logger.error("LLM image analysis failed.", exc_info=True)
+                    raise
+        
+        logger.error("All models exhausted for image analysis")
+        raise last_error
 
     async def verify_for_daughter_agent(self, claim_text: str, relevant_data: List[str], prompt_instructions: Dict, domain: str) -> VerificationOutput:
         context = "\n\n".join(relevant_data)
@@ -347,7 +447,7 @@ class LLMClient:
         """
         placeholder_id = uuid4()
         try:
-            response = await self.model.generate_content_async(prompt)
+            response = await self._call_llm(prompt)
             json_string = extract_json_from_text(response.text)
             if not json_string: raise ValueError("No JSON found")
             json_response = json.loads(json_string)

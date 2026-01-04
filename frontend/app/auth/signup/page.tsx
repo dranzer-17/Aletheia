@@ -7,6 +7,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { Toast } from "@/components/Toast";
 import { API_ENDPOINTS } from "@/lib/config";
 import { cn } from "@/lib/utils";
+import { signInWithGoogle } from "@/lib/supabase";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -17,6 +18,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" | "loading" | "warning"; isVisible: boolean }>({
     message: "",
     type: "info",
@@ -130,6 +132,19 @@ export default function SignupPage() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleLoading(true);
+      showToast("Redirecting to Google...", "loading");
+      await signInWithGoogle();
+    } catch (error) {
+      hideToast();
+      console.error("Google sign-in error:", error);
+      showToast("Failed to sign in with Google. Please try again.", "error");
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative bg-background transition-colors">
       {/* Toast Notification */}
@@ -165,11 +180,20 @@ export default function SignupPage() {
         {/* Gray gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/10 pointer-events-none rounded-2xl" />
         <div className="relative z-10">
-        <button className="btn-google mb-6">
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
-             <path fill="currentColor" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27c3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10c5.35 0 9.25-3.67 9.25-9.09c0-.76-.15-1.81-.15-1.81Z"/>
-          </svg>
-          Sign up with Google
+        <button 
+          onClick={handleGoogleSignIn}
+          disabled={googleLoading || loading}
+          type="button"
+          className="btn-google mb-6 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {googleLoading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27c3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10c5.35 0 9.25-3.67 9.25-9.09c0-.76-.15-1.81-.15-1.81Z"/>
+            </svg>
+          )}
+          {googleLoading ? "Redirecting..." : "Sign up with Google"}
         </button>
 
         <div className="relative flex items-center justify-center mb-6">

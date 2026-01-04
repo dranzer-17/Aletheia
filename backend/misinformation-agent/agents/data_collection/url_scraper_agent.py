@@ -1,5 +1,5 @@
 from typing import List
-from firecrawl import FirecrawlApp
+from tavily import TavilyClient
 import asyncio
 
 from models.collected_data import CollectedDataItem, SourceMetaData
@@ -21,32 +21,33 @@ def scrape_url_sync(api_key: str, url: str) -> dict:
     This isolates the blocking call.
     """
     try:
-        app = FirecrawlApp(api_key=api_key)
-        # The scrape method takes keyword arguments, not a params dict
-        result = app.scrape(url=url, only_main_content=True, formats=['markdown'])
-        # Convert the Document object to a dict using model_dump (Pydantic v2) or dict() (deprecated but works)
-        if hasattr(result, 'model_dump'):
-            return result.model_dump()
-        elif hasattr(result, 'dict'):
-            return result.dict()
-        else:
-            # Fallback: try to access attributes directly
+        client = TavilyClient(api_key=api_key)
+        # Use Tavily's extract method to scrape content from a specific URL
+        result = client.extract(urls=[url])
+        
+        # Tavily extract returns a list of results
+        if result and 'results' in result and len(result['results']) > 0:
+            extracted = result['results'][0]
             return {
-                'markdown': getattr(result, 'markdown', ''),
-                'metadata': getattr(result, 'metadata', {})
+                'content': extracted.get('raw_content', ''),
+                'metadata': {
+                    'title': extracted.get('url', ''),
+                    'url': extracted.get('url', '')
+                }
             }
+        return {}
     except Exception as e:
         # Log the error here to capture it immediately
         logger.error(f"Synchronous scrape wrapper failed for URL ({url})", exc_info=e)
         return {} # Return an empty dict on failure
 
-async def run(urls_to_scrape: List[str], firecrawl_api_key: str) -> List[CollectedDataItem]:
+async def run(urls_to_scrape: List[str], tavily_api_key: str) -> List[CollectedDataItem]:
     """
-    Takes a list of URLs and scrapes their main content using FireCrawl,
+    Takes a list of URLs and scrapes their main content using Tavily,
     correctly handling the synchronous nature of the library.
     """
     logger.info(SEPARATOR)
-    logger.info("--- URL SCRAPER AGENT (FIRECRAWL) BEING CALLED ---")
+    logger.info("--- URL SCRAPER AGENT (TAVILY) BEING CALLED ---")
     logger.info(f"Received {len(urls_to_scrape)} URLs to scrape.")
 
     collected_items: List[CollectedDataItem] = []
@@ -61,7 +62,7 @@ async def run(urls_to_scrape: List[str], firecrawl_api_key: str) -> List[Collect
     tasks = []
     for url in urls_to_scrape:
         # Each task will run the synchronous scrape_url_sync function in a separate thread
-        tasks.append(loop.run_in_executor(None, scrape_url_sync, firecrawl_api_key, url))
+        tasks.append(loop.run_in_executor(None, scrape_url_sync, tavily_api_key, url))
 
     # Await all scraping tasks to complete
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -72,8 +73,8 @@ async def run(urls_to_scrape: List[str], firecrawl_api_key: str) -> List[Collect
             logger.error(f"Error executing scrape task for URL ({url})", exc_info=scraped_data)
             continue
 
-        if scraped_data and 'markdown' in scraped_data:
-            content = scraped_data['markdown']
+        if scraped_data and 'content' in scraped_data:
+            content = scraped_data['content']
             metadata = scraped_data.get('metadata', {})
             
             collected_items.append(
@@ -89,7 +90,7 @@ async def run(urls_to_scrape: List[str], firecrawl_api_key: str) -> List[Collect
             )
             logger.info(f"Successfully scraped content from: {url}")
         else:
-            logger.warning(f"Failed to extract markdown content from URL: {url}")
+            logger.warning(f"Failed to extract content from URL: {url}")
 
     logger.info(f"--- URL SCRAPER AGENT FINISHED. Returning {len(collected_items)} items. ---")
     logger.info(SEPARATOR)

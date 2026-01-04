@@ -8,6 +8,7 @@ APP_CONFIG = {
     "GNEWS_API_BASE_URL": "https://gnews.io/api/v4/",
     "GOOGLE_CLOUD_API_KEY": os.getenv("GOOGLE_CLOUD_API_KEY"),
     "LLM_MODEL_NAME": os.getenv("LLM_MODEL_NAME", "gemini-1.5-flash"),
+    "LLM_FALLBACK_MODELS": os.getenv("LLM_FALLBACK_MODELS", "gemini-3-flash,gemini-2.5-flash,gemini-1.5-flash-8b,gemini-2.0-flash-exp,gemini-1.5-flash"),
     "FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY"),
     "SERPAPI_API_KEY": os.getenv("SERPAPI_API_KEY"),
     "TAVILY_API_KEY": os.getenv("TAVILY_API_KEY"),

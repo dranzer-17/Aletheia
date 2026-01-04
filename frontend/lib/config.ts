@@ -10,8 +10,10 @@ export const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     SIGNUP: `${API_BASE_URL}/auth/signup`,
     ME: `${API_BASE_URL}/auth/me`,
+    GOOGLE_CALLBACK: `${API_BASE_URL}/auth/google/callback`,
   },
   CLAIMS: {
+    BASE: `${API_BASE_URL}/claims`,
     ANALYZE: `${API_BASE_URL}/claims/analyze`,
     LIST: `${API_BASE_URL}/claims`,
     VERDICT: (claimId: string) => `${API_BASE_URL}/claims/${claimId}`,

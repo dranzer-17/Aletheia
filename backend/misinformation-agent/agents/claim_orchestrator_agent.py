@@ -289,7 +289,7 @@ async def url_scraper_node(state: GraphState, config_args: Dict[str, Any], statu
         logger.warning("No URLs to scrape.")
         return {}
 
-    scraped_items = await url_scraper_agent.run(urls, config_args.get("FIRECRAWL_API_KEY"))
+    scraped_items = await url_scraper_agent.run(urls, config_args.get("TAVILY_API_KEY"))
     save_json("scraped_content_data.json", scraped_items)
     if scraped_items:
         agents_used.append(url_scraper_agent.run.__module__)
@@ -325,7 +325,7 @@ async def content_enrichment_node(
     if manual_urls:
         scraped_items = await url_scraper_agent.run(
             manual_urls,
-            config_args.get("FIRECRAWL_API_KEY"),
+            config_args.get("TAVILY_API_KEY"),
         )
         if scraped_items:
             bundle.data.extend(scraped_items)

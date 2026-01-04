@@ -729,3 +729,94 @@ async def delete_claim(claim_id: str, current_user: dict = Depends(get_current_u
     await db.claim_agents.delete_many({"claimId": claim_id})
     return {"deleted": True}
 
+
+@router.get("/analytics/claims-over-time")
+async def get_claims_over_time(current_user: dict = Depends(get_current_user)):
+    """Get claims over time for the last 7 days for the current user."""
+    from datetime import timedelta
+    
+    user_id = current_user.get("user_id")
+    if user_id is None:
+        return {"data": []}
+    
+    # Get claims from the last 7 days
+    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    
+    query = {
+        "$or": [
+            {"userId": user_id},
+            {"userId": {"$in": [int(user_id), str(user_id)]}},
+        ],
+        "created_at": {"$gte": seven_days_ago}
+    }
+    
+    claims = await db.claim_verdicts.find(
+        query,
+        {"created_at": 1}
+    ).to_list(length=None)
+    
+    # Group by day
+    day_counts = {}
+    for claim in claims:
+        created = claim.get("created_at")
+        if created:
+            if isinstance(created, str):
+                created = datetime.fromisoformat(created.replace("Z", "+00:00"))
+            day_key = created.strftime("%a")  # Mon, Tue, etc.
+            day_counts[day_key] = day_counts.get(day_key, 0) + 1
+    
+    # Create data for last 7 days
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    today = datetime.utcnow()
+    result_data = []
+    
+    for i in range(7):
+        day_date = today - timedelta(days=6-i)
+        day_name = day_date.strftime("%a")
+        result_data.append({
+            "x": day_name,
+            "y": day_counts.get(day_name, 0)
+        })
+    
+    return {
+        "data": [{
+            "id": "Claims",
+            "color": "#0a7fff",
+            "data": result_data
+        }]
+    }
+
+
+@router.get("/analytics/category-breakdown")
+async def get_category_breakdown(current_user: dict = Depends(get_current_user)):
+    """Get category breakdown for the current user."""
+    user_id = current_user.get("user_id")
+    if user_id is None:
+        return {"data": []}
+    
+    query = {
+        "$or": [
+            {"userId": user_id},
+            {"userId": {"$in": [int(user_id), str(user_id)]}},
+        ],
+        "status": "completed",
+        "category": {"$ne": None, "$exists": True}
+    }
+    
+    claims = await db.claim_verdicts.find(
+        query,
+        {"category": 1}
+    ).to_list(length=None)
+    
+    # Count categories
+    from collections import Counter
+    categories = [claim.get("category") for claim in claims if claim.get("category")]
+    category_counts = Counter(categories)
+    
+    # Format for response
+    result = [
+        {"category": cat.capitalize(), "value": count}
+        for cat, count in category_counts.most_common(5)
+    ]
+    
+    return {"data": result}

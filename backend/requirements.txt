@@ -6,12 +6,11 @@ httpx
 beautifulsoup4
 google-generativeai
 google-genai
-firecrawl-py
+tavily-python
 google-search-results
 questionary
 wikipedia
 yfinance
-tavily-python
 huggingface_hub
 numpy
 fastapi
