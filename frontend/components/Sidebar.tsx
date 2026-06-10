@@ -3,16 +3,16 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { 
-  LayoutDashboard, 
+import Image from "next/image";
+import {
+  LayoutDashboard,
   MessageSquare, // Chatbot
   TrendingUp,    // Trends
   Globe,         // 3D Globe
   ShieldAlert,   // Misinformation
   Share2,        // Social Network Graph
   Scan,          // AI Detection
-  LogOut, 
-  ShieldCheck,
+  LogOut,
   Video          // Deepfake Detection
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -71,9 +71,7 @@ export function Sidebar() {
         {/* LOGO */}
         <Link href="/" className="h-20 flex items-center px-6 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-foreground rounded-lg">
-              <ShieldCheck className="w-5 h-5 text-background" />
-            </div>
+            <Image src="/logo.png" alt="Aletheia" width={32} height={32} className="rounded-lg" />
             <span className="font-semibold text-lg tracking-tight text-foreground">ALETHEIA</span>
           </div>
         </Link>
