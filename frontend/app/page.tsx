@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ShieldCheck, ChevronRight, Check, Zap, Crown } from "lucide-react";
+import Image from "next/image";
 import { ModeToggle } from "@/components/ModeToggle";
 import { API_ENDPOINTS } from "@/lib/config";
 
@@ -57,10 +58,7 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="container mx-auto px-6 py-6 flex justify-between items-center z-20">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center relative overflow-hidden shiny-blue-bg">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-70 pointer-events-none" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)' }} />
-            <ShieldCheck className="text-white w-5 h-5 relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-          </div>
+          <Image src="/logo.png" alt="Aletheia" width={32} height={32} className="rounded-lg" />
           <span className="text-lg font-semibold tracking-tight text-foreground">ALETHEIA</span>
         </Link>
 
